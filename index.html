@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guitar Worship Trainer</title>
+    <link rel="stylesheet" href="./style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="app-container">
+        <header>
+            <h1>Guitar Worship Trainer</h1>
+            <div class="header-controls">
+                <button id="settings-btn" class="icon-btn" title="Configuración de Sonido">⚙️</button>
+                <button id="theme-toggle-btn" class="icon-btn" title="Cambiar Tema">🌙</button>
+            </div>
+        </header>
+        <nav>
+            <button class="nav-btn active" data-target="home">🏠 Inicio</button>
+            <button class="nav-btn" data-target="metronome">🥁 Metrónomo</button>
+            <button class="nav-btn" data-target="ear-training">🎵 Oído Musical</button>
+            <button class="nav-btn" data-target="memory">🧠 Memoria Musical</button>
+        </nav>
+        <main>
+            <section id="home" class="page active"><h2>Bienvenido, Guitarrista</h2><p>Tu herramienta personal para crecer en ritmo, oído y memoria. ¡Vamos a practicar!</p><div class="card-container"><div class="card" data-target="metronome"><h3>Metrónomo Avanzado</h3><p>Domina el tiempo, practica con subdivisiones y aumenta tu velocidad progresivamente.</p></div><div class="card" data-target="ear-training"><h3>Entrenamiento Auditivo</h3><p>Reconoce intervalos, acordes y progresiones. Afina tu oído para la armonía.</p></div><div class="card" data-target="memory"><h3>Memoria Musical</h3><p>Guarda tus canciones, practica con flashcards de acordes y memoriza estructuras.</p></div></div></section>
+            <section id="metronome" class="page"><h2>Metrónomo</h2><div class="metronome-display"><span id="bpm-display">120</span> BPM</div><div class="controls-grid"><div class="control-group"><label for="bpm-slider">Tempo (BPM):</label><input type="range" id="bpm-slider" min="40" max="240" value="120"></div><div class="control-group"><label for="time-signature-select">Compás:</label><select id="time-signature-select"><option value="4/4">4/4</option><option value="3/4">3/4</option><option value="2/4">2/4</option><option value="6/8">6/8</option></select></div><div class="control-group"><label for="subdivision-select">Subdivisión:</label><select id="subdivision-select"><option value="1">Negra (♩)</option><option value="2">Corchea (♪)</option><option value="3">Tresillo</option><option value="4">Semicorchea (♬)</option></select></div><button id="play-pause-metronome">▶️ Iniciar</button></div><div class="speed-trainer"><h4>🚀 Speed Trainer</h4><label><input type="checkbox" id="speed-trainer-toggle"> Activar</label><p>Aumentar <input type="number" id="speed-trainer-increase" value="5" min="1"> BPM cada <input type="number" id="speed-trainer-bars" value="8" min="1"> compases.</p></div></section>
+            <section id="ear-training" class="page"><h2>Oído Musical</h2><div class="tabs"><button class="tab-btn active" data-tab="intervals">Intervalos</button><button class="tab-btn" data-tab="chords">Acordes</button><button class="tab-btn" data-tab="progressions">Progresiones</button></div><div id="ear-training-content"><div id="intervals" class="tab-content active"><h3>Entrenamiento de Intervalos</h3><p>Escucha el intervalo y adivina cuál es.</p></div><div id="chords" class="tab-content"><h3>Entrenamiento de Acordes</h3><p>Identifica si el acorde es Mayor, menor, etc.</p></div><div id="progressions" class="tab-content"><h3>Entrenamiento de Progresiones</h3><p>Reconoce progresiones comunes como I-V-vi-IV.</p></div></div><div id="ear-training-controls" class="game-controls"></div><div id="ear-training-feedback" class="feedback-zone"></div></section>
+            <section id="memory" class="page"><h2>Memoria Musical</h2><div class="song-manager"><select id="song-select"></select><button id="new-song-btn">Nueva Canción</button><button id="edit-song-btn">Editar</button><button id="delete-song-btn">Borrar</button><button id="import-songs-btn">Importar</button><button id="export-songs-btn">Exportar</button></div><div id="song-display" class="song-display-area"></div><div class="memory-modes"><button id="play-progression-btn">▶️ Tocar Progresión</button><button id="flashcard-mode-btn">🃏 Modo Flashcard</button><button id="guess-section-btn">🤔 Adivina la Sección</button></div></section>
+        </main>
+    </div>
+    <div id="settings-modal" class="modal"><div class="modal-content"><span class="close-btn">×</span><h3>Configuración de Sonido</h3><div class="control-group"><label for="metronome-sound-select">Sonido del Metrónomo:</label><select id="metronome-sound-select"><option value="classic">Clásico</option><option value="woodblock">Woodblock</option></select></div><div class="control-group"><label for="note-sound-select">Sonido de Notas (Oído):</label><select id="note-sound-select"><option value="piano">Piano</option><option value="guitar">Guitarra Limpia</option></select></div><button id="save-settings-btn">Guardar</button></div></div>
+    <script src="./js/audio.js"></script>
+    <script src="./js/ui.js"></script>
+    <script src="./js/metronome.js"></script>
+    <script src="./js/earTrainer.js"></script>
+    <script src="./js/memory.js"></script>
+    <script src="./js/main.js"></script>
+</body>
+</html>
