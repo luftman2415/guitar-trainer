@@ -11,7 +11,6 @@
     <style>
         /* Variables CSS para los diferentes temas */
         :root {
-            /* Tema Claro */
             --bg-primary: #ffffff;
             --bg-secondary: #f8f9fa;
             --bg-card: #ffffff;
@@ -85,337 +84,107 @@
             line-height: 1.6;
         }
 
-        /* Header */
-        .header {
-            background-color: var(--bg-secondary);
-            padding: 1rem 2rem;
-            box-shadow: var(--shadow);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            border-bottom: 1px solid var(--border-color);
-        }
+        /* Header y Navegación */
+        .header { background-color: var(--bg-secondary); padding: 1rem 2rem; box-shadow: var(--shadow); position: sticky; top: 0; z-index: 100; border-bottom: 1px solid var(--border-color); }
+        .header-content { display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; }
+        .logo { font-size: 1.5rem; font-weight: 700; color: var(--accent-primary); }
+        .theme-switcher { display: flex; gap: 0.5rem; }
+        .theme-btn { background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-primary); padding: 0.5rem; border-radius: 8px; cursor: pointer; font-size: 1.2rem; transition: all 0.3s ease; }
+        .theme-btn:hover { background: var(--accent-primary); color: white; transform: translateY(-2px); }
+        .theme-btn.active { background: var(--accent-primary); color: white; }
+        .nav { background-color: var(--bg-card); padding: 1rem 2rem; border-bottom: 1px solid var(--border-color); }
+        .nav-content { max-width: 1200px; margin: 0 auto; display: flex; gap: 1rem; flex-wrap: wrap; }
+        .nav-btn { background: transparent; border: 2px solid var(--border-color); color: var(--text-primary); padding: 0.75rem 1.5rem; border-radius: 25px; cursor: pointer; font-family: 'Montserrat', sans-serif; font-weight: 500; transition: all 0.3s ease; }
+        .nav-btn:hover { border-color: var(--accent-primary); color: var(--accent-primary); transform: translateY(-2px); }
+        .nav-btn.active { background: var(--accent-primary); border-color: var(--accent-primary); color: white; }
 
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
+        /* Contenido Principal y Secciones */
+        .main { max-width: 1200px; margin: 0 auto; padding: 2rem; min-height: calc(100vh - 200px); }
+        .section { display: none; animation: fadeIn 0.5s ease-in-out; }
+        .section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        .logo {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--accent-primary);
-        }
+        /* Componentes Genéricos */
+        .welcome { text-align: center; margin-bottom: 3rem; }
+        .welcome h1 { font-size: 2.5rem; margin-bottom: 1rem; color: var(--accent-primary); }
+        .welcome p { font-size: 1.2rem; color: var(--text-secondary); max-width: 600px; margin: 0 auto; }
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-top: 2rem; }
+        .card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 2rem; text-align: center; cursor: pointer; transition: all 0.3s ease; box-shadow: var(--shadow); }
+        .card:hover { transform: translateY(-5px); box-shadow: var(--shadow-hover); }
+        .card-icon { font-size: 3rem; margin-bottom: 1rem; }
+        .card h3 { font-size: 1.5rem; margin-bottom: 1rem; color: var(--accent-primary); }
+        .card p { color: var(--text-secondary); }
+        .control-group { margin-bottom: 2rem; }
+        .control-group label { display: block; margin-bottom: 0.5rem; font-weight: 500; }
 
-        .theme-switcher {
-            display: flex;
-            gap: 0.5rem;
-        }
+        /* Estilos Metrónomo */
+        .metronome-controls { max-width: 600px; margin: 0 auto; text-align: center; }
+        .bpm-display { font-size: 4rem; font-weight: 700; color: var(--accent-primary); margin-bottom: 2rem; }
+        .bpm-slider { width: 100%; }
+        .time-signature, .instrument-select { padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 8px; background: var(--bg-primary); color: var(--text-primary); font-family: 'Montserrat', sans-serif; font-size: 1rem; min-width: 200px; }
+        .play-btn { background: var(--accent-primary); color: white; border: none; padding: 1rem 2rem; border-radius: 50px; font-size: 1.2rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; }
+        .play-btn:hover { background: var(--accent-secondary); transform: translateY(-2px); }
+        .play-btn.playing { background: var(--accent-secondary); }
+        .visual-indicator { width: 100px; height: 100px; border-radius: 50%; border: 4px solid var(--border-color); margin: 2rem auto; transition: all 0.3s ease; }
+        .visual-indicator.beat { border-color: var(--accent-primary); background: var(--accent-primary); transform: scale(1.1); }
+        
+        /* Estilos Oído Musical */
+        .instrument-selector { text-align: center; margin-bottom: 2rem; padding: 1rem; background: var(--bg-card); border-radius: 12px; border: 1px solid var(--border-color); }
+        .instrument-selector label { display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--accent-primary); }
+        .tabs { display: flex; border-bottom: 2px solid var(--border-color); margin-bottom: 2rem; gap: 1rem; }
+        .tab { background: transparent; border: none; color: var(--text-secondary); padding: 1rem 1.5rem; cursor: pointer; font-family: 'Montserrat', sans-serif; font-weight: 500; border-bottom: 2px solid transparent; transition: all 0.3s ease; }
+        .tab:hover { color: var(--accent-primary); }
+        .tab.active { color: var(--accent-primary); border-bottom-color: var(--accent-primary); }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .exercise-controls { text-align: center; margin-top: 2rem; }
+        .exercise-btn { background: var(--bg-card); border: 2px solid var(--accent-primary); color: var(--accent-primary); padding: 0.75rem 1.5rem; border-radius: 8px; cursor: pointer; font-family: 'Montserrat', sans-serif; font-weight: 500; margin: 0.5rem; transition: all 0.3s ease; }
+        .exercise-btn:hover { background: var(--accent-primary); color: white; }
+        .options-container { display: none; margin-top: 2rem; text-align: center; }
+        .options-container.active { display: block; }
+        .option-btn { background: var(--bg-card); border: 2px solid var(--border-color); color: var(--text-primary); padding: 0.75rem 1.5rem; border-radius: 8px; cursor: pointer; font-family: 'Montserrat', sans-serif; font-weight: 500; margin: 0.5rem; min-width: 120px; }
+        .option-btn:hover { border-color: var(--accent-primary); color: var(--accent-primary); }
+        .option-btn.correct { background: var(--success-color); border-color: var(--success-color); color: white; }
+        .option-btn.incorrect { background: var(--error-color); border-color: var(--error-color); color: white; }
+        .chord-diagram { display: none; margin: 2rem auto; max-width: 300px; text-align: center; }
+        .chord-diagram.active { display: block; }
+        .chord-title { font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem; color: var(--accent-primary); }
+        .fretboard { position: relative; width: 200px; height: 240px; margin: 0 auto; background: var(--bg-card); border: 2px solid var(--border-color); border-radius: 8px; }
+        .fret { position: absolute; width: 100%; height: 2px; background: var(--border-color); left: 0; }
+        .string { position: absolute; width: 2px; height: 100%; background: var(--border-color); top: 0; }
+        .finger-position { position: absolute; width: 20px; height: 20px; background: var(--accent-primary); border-radius: 50%; transform: translate(-50%, -50%); display: flex; align-items: center; justify-content: center; color: white; font-size: 12px; font-weight: bold; }
+        .open-string { position: absolute; width: 16px; height: 16px; border: 2px solid var(--success-color); border-radius: 50%; background: transparent; transform: translate(-50%, -50%); top: -15px; }
+        .muted-string { position: absolute; transform: translate(-50%, -50%); top: -15px; color: var(--error-color); font-size: 20px; font-weight: bold; }
 
-        .theme-btn {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            color: var(--text-primary);
-            padding: 0.5rem;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 1.2rem;
-            transition: all 0.3s ease;
-        }
+        /* Estilos Memoria Musical */
+        .song-manager { display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; margin-bottom: 1.5rem; padding: 1rem; background-color: var(--bg-card); border-radius: 12px; border: 1px solid var(--border-color); }
+        #songSelect { flex-grow: 1; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 8px; background: var(--bg-primary); color: var(--text-primary); font-size: 1rem; }
+        .manager-btn { background: var(--accent-primary); color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 8px; cursor: pointer; transition: background-color 0.3s; }
+        .manager-btn.delete { background: var(--accent-secondary); }
+        .song-display { padding: 1.5rem; background-color: var(--bg-secondary); border-radius: 12px; min-height: 200px; white-space: pre-wrap; line-height: 1.8; }
+        .song-display h3 { margin-bottom: 0.5rem; color: var(--accent-primary); }
+        .song-display h4 { margin-bottom: 1rem; color: var(--text-secondary); font-weight: 500; }
+        
+        /* Modal para Añadir Canción */
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.6); animation: fadeIn 0.3s; }
+        .modal.active { display: flex; align-items: center; justify-content: center; }
+        .modal-content { background: var(--bg-primary); padding: 2rem; border-radius: 12px; box-shadow: var(--shadow-hover); width: 90%; max-width: 500px; position: relative; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+        .modal-header h2 { color: var(--accent-primary); }
+        .close-btn { font-size: 2rem; font-weight: bold; color: var(--text-secondary); cursor: pointer; }
+        .modal-body .control-group input, .modal-body .control-group textarea { width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-secondary); color: var(--text-primary); font-family: 'Montserrat', sans-serif; }
+        .modal-body .control-group textarea { min-height: 150px; resize: vertical; }
+        .modal-footer { text-align: right; margin-top: 1.5rem; }
+        .modal-footer button { margin-left: 0.5rem; }
 
-        .theme-btn:hover {
-            background: var(--accent-primary);
-            color: white;
-            transform: translateY(-2px);
-        }
-
-        .theme-btn.active {
-            background: var(--accent-primary);
-            color: white;
-        }
-
-        /* Navegación */
-        .nav {
-            background-color: var(--bg-card);
-            padding: 1rem 2rem;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .nav-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-        }
-
-        .nav-btn {
-            background: transparent;
-            border: 2px solid var(--border-color);
-            color: var(--text-primary);
-            padding: 0.75rem 1.5rem;
-            border-radius: 25px;
-            cursor: pointer;
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 500;
-            transition: all 0.3s ease;
-        }
-
-        .nav-btn:hover {
-            border-color: var(--accent-primary);
-            color: var(--accent-primary);
-            transform: translateY(-2px);
-        }
-
-        .nav-btn.active {
-            background: var(--accent-primary);
-            border-color: var(--accent-primary);
-            color: white;
-        }
-
-        /* Contenido Principal */
-        .main {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem;
-            min-height: calc(100vh - 200px);
-        }
-
-        .section {
-            display: none;
-            animation: fadeIn 0.5s ease-in-out;
-        }
-
-        .section.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Estilos de controles y componentes */
-        .control-group {
-            margin-bottom: 2rem;
-        }
-
-        .control-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-        }
-
-        /* Selector de Instrumento */
-        .instrument-selector {
-            text-align: center;
-            margin-bottom: 2rem;
-            padding: 1rem;
-            background: var(--bg-card);
-            border-radius: 12px;
-            border: 1px solid var(--border-color);
-        }
-
-        .instrument-selector label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-            color: var(--accent-primary);
-        }
-
-        .instrument-select {
-            padding: 0.75rem;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            font-family: 'Montserrat', sans-serif;
-            font-size: 1rem;
-            min-width: 200px;
-        }
-
-        /* Tabs para Oído Musical */
-        .tabs {
-            display: flex;
-            border-bottom: 2px solid var(--border-color);
-            margin-bottom: 2rem;
-            gap: 1rem;
-        }
-
-        .tab {
-            background: transparent;
-            border: none;
-            color: var(--text-secondary);
-            padding: 1rem 1.5rem;
-            cursor: pointer;
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 500;
-            border-bottom: 2px solid transparent;
-            transition: all 0.3s ease;
-        }
-
-        .tab:hover {
-            color: var(--accent-primary);
-        }
-
-        .tab.active {
-            color: var(--accent-primary);
-            border-bottom-color: var(--accent-primary);
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        .exercise-controls {
-            text-align: center;
-            margin-top: 2rem;
-        }
-
-        .exercise-btn {
-            background: var(--bg-card);
-            border: 2px solid var(--accent-primary);
-            color: var(--accent-primary);
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            cursor: pointer;
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 500;
-            margin: 0.5rem;
-            transition: all 0.3s ease;
-        }
-
-        .exercise-btn:hover {
-            background: var(--accent-primary);
-            color: white;
-        }
-
-        /* Botones de opciones para ejercicios */
-        .options-container {
-            display: none;
-            margin-top: 2rem;
-            text-align: center;
-        }
-
-        .options-container.active {
-            display: block;
-        }
-
-        .option-btn {
-            background: var(--bg-card);
-            border: 2px solid var(--border-color);
-            color: var(--text-primary);
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            cursor: pointer;
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 500;
-            margin: 0.5rem;
-            min-width: 120px;
-        }
-
-        .option-btn:hover {
-            border-color: var(--accent-primary);
-            color: var(--accent-primary);
-        }
-
-        .option-btn.correct {
-            background: var(--success-color);
-            border-color: var(--success-color);
-            color: white;
-        }
-
-        .option-btn.incorrect {
-            background: var(--error-color);
-            border-color: var(--error-color);
-            color: white;
-        }
-
-        /* Diagrama de acordes */
-        .chord-diagram {
-            display: none;
-            margin: 2rem auto;
-            max-width: 300px;
-            text-align: center;
-        }
-
-        .chord-diagram.active {
-            display: block;
-        }
-
-        .chord-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
-            color: var(--accent-primary);
-        }
-
-        .fretboard {
-            position: relative;
-            width: 200px;
-            height: 240px;
-            margin: 0 auto;
-            background: var(--bg-card);
-            border: 2px solid var(--border-color);
-            border-radius: 8px;
-        }
-
-        .fret {
-            position: absolute;
-            width: 100%;
-            height: 2px;
-            background: var(--border-color);
-            left: 0;
-        }
-
-        .string {
-            position: absolute;
-            width: 2px;
-            height: 100%;
-            background: var(--border-color);
-            top: 0;
-        }
-
-        .finger-position {
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            background: var(--accent-primary);
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 12px;
-            font-weight: bold;
-        }
-
-        .open-string {
-            position: absolute;
-            width: 16px;
-            height: 16px;
-            border: 2px solid var(--success-color);
-            border-radius: 50%;
-            background: transparent;
-            transform: translate(-50%, -50%);
-            top: -15px;
-        }
-
-        .muted-string {
-            position: absolute;
-            transform: translate(-50%, -50%);
-            top: -15px;
-            color: var(--error-color);
-            font-size: 20px;
-            font-weight: bold;
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content, .nav-content, .main { padding: 1rem; }
+            .welcome h1 { font-size: 2rem; }
+            .cards-grid { grid-template-columns: 1fr; }
+            .tabs { flex-wrap: wrap; }
+            .option-btn { min-width: 100px; margin: 0.25rem; }
+            .song-manager { flex-direction: column; align-items: stretch; }
         }
     </style>
 </head>
@@ -447,67 +216,53 @@
     <main class="main">
         <!-- Sección Inicio -->
         <section id="inicio" class="section active">
-            <!-- Contenido de inicio aquí -->
+             <div class="welcome">
+                <h1>Bienvenido a Guitar Worship Trainer</h1>
+                <p>Mejora tus habilidades musicales con nuestras herramientas de entrenamiento diseñadas especialmente para guitarristas de adoración.</p>
+            </div>
+            <div class="cards-grid">
+                <div class="card" data-section="metronome"><div class="card-icon">🥁</div><h3>Metrónomo</h3><p>Desarrolla tu sentido del tiempo con nuestro metrónomo avanzado.</p></div>
+                <div class="card" data-section="ear-training"><div class="card-icon">👂</div><h3>Oído Musical</h3><p>Entrena tu oído con ejercicios de intervalos y acordes con sonidos realistas.</p></div>
+                <div class="card" data-section="memory"><div class="card-icon">🧠</div><h3>Memoria Musical</h3><p>Guarda tus canciones, practica sus acordes y memoriza su estructura.</p></div>
+            </div>
         </section>
 
         <!-- Sección Metrónomo -->
         <section id="metronome" class="section">
-             <!-- Contenido de metrónomo aquí -->
+            <div class="metronome-controls">
+                <div class="bpm-display" id="bpmDisplay">120</div>
+                <div class="visual-indicator" id="visualIndicator"></div>
+                <div class="control-group"><label for="bpmSlider">Tempo (BPM)</label><input type="range" id="bpmSlider" class="bpm-slider" min="40" max="240" value="120"></div>
+                <div class="control-group"><label for="timeSignature">Compás</label><select id="timeSignature" class="time-signature"><option value="4/4">4/4</option><option value="3/4">3/4</option><option value="2/4">2/4</option><option value="6/8">6/8</option></select></div>
+                <button id="playBtn" class="play-btn">▶️ Iniciar</button>
+            </div>
         </section>
 
         <!-- Sección Oído Musical -->
         <section id="ear-training" class="section">
-            <!-- Selector de Instrumento -->
             <div class="instrument-selector">
                 <label for="instrumentSelect">🎵 Selecciona el Instrumento:</label>
-                <select id="instrumentSelect" class="instrument-select">
-                    <option value="piano">🎹 Piano</option>
-                    <option value="guitar">🎸 Guitarra</option>
-                    <option value="bass">🎸 Bajo</option>
-                </select>
+                <select id="instrumentSelect" class="instrument-select"><option value="piano">🎹 Piano</option><option value="guitar">🎸 Guitarra</option><option value="bass">🎸 Bajo</option></select>
             </div>
-
             <div class="tabs">
-                <button class="tab active" data-tab="intervals">Intervalos</button>
-                <button class="tab" data-tab="chords">Acordes</button>
-                <button class="tab" data-tab="progressions">Progresiones</button>
+                <button class="tab active" data-tab="intervals">Intervalos</button><button class="tab" data-tab="chords">Acordes</button><button class="tab" data-tab="progressions">Progresiones</button>
             </div>
-
             <div id="intervals" class="tab-content active">
-                <h2>Entrenamiento de Intervalos</h2>
-                <p>Escucha y identifica diferentes intervalos musicales.</p>
-                <div class="exercise-controls">
-                    <button class="exercise-btn" id="newInterval">🎵 Nuevo Intervalo</button>
-                    <button class="exercise-btn" id="repeatInterval">🔄 Repetir</button>
-                </div>
+                <h2>Entrenamiento de Intervalos</h2><p>Escucha y identifica diferentes intervalos musicales.</p>
+                <div class="exercise-controls"><button class="exercise-btn" id="newInterval">🎵 Nuevo Intervalo</button><button class="exercise-btn" id="repeatInterval">🔄 Repetir</button></div>
                 <div class="options-container" id="intervalOptions"></div>
                 <div id="intervalResult" style="margin-top: 1rem; font-size: 1.2rem; font-weight: 600;"></div>
             </div>
-
             <div id="chords" class="tab-content">
-                <h2>Entrenamiento de Acordes</h2>
-                <p>Reconoce diferentes tipos de acordes y sus cualidades.</p>
-                <div class="exercise-controls">
-                    <button class="exercise-btn" id="newChord">🎹 Nuevo Acorde</button>
-                    <button class="exercise-btn" id="repeatChord">🔄 Repetir</button>
-                </div>
+                <h2>Entrenamiento de Acordes</h2><p>Reconoce diferentes tipos de acordes y sus cualidades.</p>
+                <div class="exercise-controls"><button class="exercise-btn" id="newChord">🎹 Nuevo Acorde</button><button class="exercise-btn" id="repeatChord">🔄 Repetir</button></div>
                 <div class="options-container" id="chordOptions"></div>
                 <div id="chordResult" style="margin-top: 1rem; font-size: 1.2rem; font-weight: 600;"></div>
-                
-                <!-- Diagrama de Acordes -->
-                <div class="chord-diagram" id="chordDiagram">
-                    <div class="chord-title" id="chordTitle"></div>
-                    <div class="fretboard" id="fretboard"></div>
-                </div>
+                <div class="chord-diagram" id="chordDiagram"><div class="chord-title" id="chordTitle"></div><div class="fretboard" id="fretboard"></div></div>
             </div>
-
             <div id="progressions" class="tab-content">
-                <h2>Entrenamiento de Progresiones</h2>
-                <p>Identifica progresiones armónicas comunes en la música de adoración.</p>
-                <div class="exercise-controls">
-                    <button class="exercise-btn" id="newProgression">🎼 Nueva Progresión</button>
-                    <button class="exercise-btn" id="repeatProgression">🔄 Repetir</button>
-                </div>
+                <h2>Entrenamiento de Progresiones</h2><p>Identifica progresiones armónicas comunes.</p>
+                <div class="exercise-controls"><button class="exercise-btn" id="newProgression">🎼 Nueva Progresión</button><button class="exercise-btn" id="repeatProgression">🔄 Repetir</button></div>
                 <div class="options-container" id="progressionOptions"></div>
                 <div id="progressionResult" style="margin-top: 1rem; font-size: 1.2rem; font-weight: 600;"></div>
             </div>
@@ -515,12 +270,383 @@
 
         <!-- Sección Memoria Musical -->
         <section id="memory" class="section">
-             <!-- Contenido de memoria aquí -->
+            <div class="song-manager">
+                <select id="songSelect"><option>Selecciona una canción</option></select>
+                <button class="manager-btn" id="addSongBtn">Nueva Canción</button>
+                <button class="manager-btn delete" id="deleteSongBtn">Eliminar</button>
+            </div>
+            <div class="song-display" id="songDisplay">
+                <h3>Selecciona una canción para ver su estructura.</h3>
+            </div>
         </section>
     </main>
 
+    <!-- Modal para Añadir Canción -->
+    <div id="addSongModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Añadir Nueva Canción</h2>
+                <span class="close-btn" id="closeModalBtn">×</span>
+            </div>
+            <div class="modal-body">
+                <form id="addSongForm">
+                    <div class="control-group">
+                        <label for="songTitle">Título</label>
+                        <input type="text" id="songTitle" required>
+                    </div>
+                    <div class="control-group">
+                        <label for="songArtist">Artista</label>
+                        <input type="text" id="songArtist">
+                    </div>
+                    <div class="control-group">
+                        <label for="songStructure">Estructura y Acordes</label>
+                        <textarea id="songStructure" placeholder="Ej:
+[Verso]
+G | C | Em | D
+
+[Coro]
+C | G | D | G" required></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="manager-btn delete" id="cancelModalBtn">Cancelar</button>
+                        <button type="submit" class="manager-btn">Guardar Canción</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
     <script>
-        // TODO: El JavaScript completo va aquí
+        // --- CLASE PRINCIPAL DE LA APLICACIÓN ---
+        class GuitarWorshipTrainer {
+            constructor() {
+                this.metronome = new Metronome();
+                this.earTraining = new EarTraining();
+                this.themeManager = new ThemeManager();
+                this.memoryManager = new MemoryManager();
+                this.init();
+            }
+
+            init() {
+                this.setupNavigation();
+                this.themeManager.loadSavedTheme();
+                this.memoryManager.init(this);
+                // Pasar una referencia de earTraining al memoryManager
+                this.memoryManager.earTraining = this.earTraining;
+            }
+
+            setupNavigation() {
+                const navButtons = document.querySelectorAll('.nav-btn');
+                const cards = document.querySelectorAll('.card[data-section]');
+
+                const allNavTriggers = [...navButtons, ...cards];
+
+                allNavTriggers.forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const section = btn.dataset.section;
+                        this.showSection(section);
+                        this.updateActiveNavButton(document.querySelector(`.nav-btn[data-section="${section}"]`));
+                    });
+                });
+            }
+
+            showSection(sectionId) {
+                document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+                document.getElementById(sectionId).classList.add('active');
+                if (sectionId !== 'metronome') this.metronome.stop();
+            }
+
+            updateActiveNavButton(activeBtn) {
+                document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+                activeBtn.classList.add('active');
+            }
+        }
+
+        // --- GESTOR DE TEMAS ---
+        class ThemeManager {
+            constructor() {
+                this.themeButtons = document.querySelectorAll('.theme-btn');
+                this.setupThemeSwitcher();
+            }
+            
+            setupThemeSwitcher() {
+                this.themeButtons.forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        this.setTheme(btn.dataset.theme);
+                    });
+                });
+            }
+
+            setTheme(theme) {
+                document.body.setAttribute('data-theme', theme);
+                localStorage.setItem('gwt-theme', theme);
+                this.themeButtons.forEach(b => b.classList.toggle('active', b.dataset.theme === theme));
+            }
+
+            loadSavedTheme() {
+                this.setTheme(localStorage.getItem('gwt-theme') || 'light');
+            }
+        }
+        
+        // --- MEMORIA MUSICAL ---
+        class MemoryManager {
+            constructor() {
+                this.songs = [];
+                this.elements = {
+                    addSongBtn: document.getElementById('addSongBtn'),
+                    deleteSongBtn: document.getElementById('deleteSongBtn'),
+                    songSelect: document.getElementById('songSelect'),
+                    songDisplay: document.getElementById('songDisplay'),
+                    modal: document.getElementById('addSongModal'),
+                    closeModalBtn: document.getElementById('closeModalBtn'),
+                    cancelModalBtn: document.getElementById('cancelModalBtn'),
+                    addSongForm: document.getElementById('addSongForm'),
+                    songTitle: document.getElementById('songTitle'),
+                    songArtist: document.getElementById('songArtist'),
+                    songStructure: document.getElementById('songStructure'),
+                };
+            }
+
+            init(app) {
+                this.app = app; // Guardar referencia a la app principal si es necesario
+                this.loadSongs();
+                this.setupEventListeners();
+            }
+
+            setupEventListeners() {
+                this.elements.addSongBtn.addEventListener('click', () => this.openModal());
+                this.elements.deleteSongBtn.addEventListener('click', () => this.deleteSelectedSong());
+                this.elements.songSelect.addEventListener('change', () => this.displaySelectedSong());
+                this.elements.closeModalBtn.addEventListener('click', () => this.closeModal());
+                this.elements.cancelModalBtn.addEventListener('click', () => this.closeModal());
+                this.elements.addSongForm.addEventListener('submit', (e) => this.saveSong(e));
+            }
+
+            openModal() { this.elements.modal.classList.add('active'); }
+            closeModal() { this.elements.modal.classList.remove('active'); this.elements.addSongForm.reset(); }
+            
+            loadSongs() {
+                this.songs = JSON.parse(localStorage.getItem('gwt-songs')) || [];
+                this.populateSongList();
+                this.displaySelectedSong();
+            }
+
+            saveSongsToStorage() {
+                localStorage.setItem('gwt-songs', JSON.stringify(this.songs));
+            }
+
+            populateSongList() {
+                this.elements.songSelect.innerHTML = '<option value="-1">Selecciona una canción</option>';
+                this.songs.forEach((song, index) => {
+                    const option = document.createElement('option');
+                    option.value = index;
+                    option.textContent = `${song.title} - ${song.artist}`;
+                    this.elements.songSelect.appendChild(option);
+                });
+            }
+
+            displaySelectedSong() {
+                const index = this.elements.songSelect.value;
+                if (index < 0 || !this.songs[index]) {
+                    this.elements.songDisplay.innerHTML = '<h3>Selecciona una canción para ver su estructura.</h3>';
+                    return;
+                }
+                const song = this.songs[index];
+                this.elements.songDisplay.innerHTML = `
+                    <h3>${song.title}</h3>
+                    <h4>${song.artist}</h4>
+                    <p>${song.structure}</p>
+                `;
+            }
+
+            saveSong(event) {
+                event.preventDefault();
+                const newSong = {
+                    title: this.elements.songTitle.value.trim(),
+                    artist: this.elements.songArtist.value.trim(),
+                    structure: this.elements.songStructure.value.trim(),
+                };
+                if (!newSong.title || !newSong.structure) return;
+                
+                this.songs.push(newSong);
+                this.saveSongsToStorage();
+                this.populateSongList();
+                this.elements.songSelect.value = this.songs.length - 1;
+                this.displaySelectedSong();
+                this.closeModal();
+            }
+
+            deleteSelectedSong() {
+                const index = this.elements.songSelect.value;
+                if (index < 0) return;
+                
+                if (confirm(`¿Estás seguro de que quieres eliminar "${this.songs[index].title}"?`)) {
+                    this.songs.splice(index, 1);
+                    this.saveSongsToStorage();
+                    this.populateSongList();
+                    this.displaySelectedSong();
+                }
+            }
+        }
+
+        // El resto de las clases (Metronome, EarTraining) permanece igual que en el código anterior
+        // Clase para el metrónomo
+        class Metronome {
+            constructor() {
+                this.audioContext = null; this.isPlaying = false; this.bpm = 120; this.timeSignature = '4/4'; this.currentBeat = 0; this.nextNoteTime = 0; this.timerID = null; this.lookahead = 25; this.scheduleAheadTime = 0.1;
+                this.setupControls();
+            }
+            setupControls() {
+                const bpmSlider = document.getElementById('bpmSlider');
+                const bpmDisplay = document.getElementById('bpmDisplay');
+                const playBtn = document.getElementById('playBtn');
+                const timeSignatureSelect = document.getElementById('timeSignature');
+                bpmSlider.addEventListener('input', (e) => { this.bpm = parseInt(e.target.value); bpmDisplay.textContent = this.bpm; });
+                timeSignatureSelect.addEventListener('change', (e) => { this.timeSignature = e.target.value; });
+                playBtn.addEventListener('click', () => { if (this.isPlaying) { this.stop(); } else { this.start(); } });
+            }
+            start() {
+                if (!this.audioContext) { this.audioContext = new (window.AudioContext || window.webkitAudioContext)(); }
+                this.isPlaying = true; this.currentBeat = 0; this.nextNoteTime = this.audioContext.currentTime;
+                this.scheduler();
+                document.getElementById('playBtn').textContent = '⏸️ Pausar';
+                document.getElementById('playBtn').classList.add('playing');
+            }
+            stop() {
+                this.isPlaying = false;
+                if (this.timerID) { clearTimeout(this.timerID); }
+                document.getElementById('playBtn').textContent = '▶️ Iniciar';
+                document.getElementById('playBtn').classList.remove('playing');
+                document.getElementById('visualIndicator').classList.remove('beat');
+            }
+            scheduler() {
+                while (this.nextNoteTime < this.audioContext.currentTime + this.scheduleAheadTime) { this.scheduleNote(this.nextNoteTime); this.nextNote(); }
+                if (this.isPlaying) { this.timerID = setTimeout(() => this.scheduler(), this.lookahead); }
+            }
+            scheduleNote(time) {
+                const oscillator = this.audioContext.createOscillator();
+                const gainNode = this.audioContext.createGain();
+                oscillator.connect(gainNode);
+                gainNode.connect(this.audioContext.destination);
+                oscillator.frequency.value = this.currentBeat === 0 ? 800 : 400;
+                oscillator.type = 'square';
+                gainNode.gain.setValueAtTime(0.1, time);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, time + 0.1);
+                oscillator.start(time);
+                oscillator.stop(time + 0.1);
+                setTimeout(() => { document.getElementById('visualIndicator').classList.add('beat'); setTimeout(() => { document.getElementById('visualIndicator').classList.remove('beat'); }, 100); }, (time - this.audioContext.currentTime) * 1000);
+            }
+            nextNote() {
+                const secondsPerBeat = 60.0 / this.bpm;
+                this.nextNoteTime += secondsPerBeat;
+                const beatsPerMeasure = parseInt(this.timeSignature.split('/')[0]);
+                this.currentBeat = (this.currentBeat + 1) % beatsPerMeasure;
+            }
+        }
+        // Clase para entrenamiento auditivo
+        class EarTraining {
+            constructor() {
+                this.audioContext = null; this.currentInterval = null; this.currentChord = null; this.currentProgression = null; this.selectedInstrument = 'piano';
+                this.intervals = [ { name: 'Unísono', semitones: 0 }, { name: '2ª menor', semitones: 1 }, { name: '2ª mayor', semitones: 2 }, { name: '3ª menor', semitones: 3 }, { name: '3ª mayor', semitones: 4 }, { name: '4ª justa', semitones: 5 }, { name: 'Tritono', semitones: 6 }, { name: '5ª justa', semitones: 7 }, { name: '6ª menor', semitones: 8 }, { name: '6ª mayor', semitones: 9 }, { name: '7ª menor', semitones: 10 }, { name: '7ª mayor', semitones: 11 }, { name: 'Octava', semitones: 12 } ];
+                this.chords = [ { name: 'Mayor', intervals: [0, 4, 7] }, { name: 'menor', intervals: [0, 3, 7] }, { name: 'Aumentado', intervals: [0, 4, 8] }, { name: 'Disminuido', intervals: [0, 3, 6] }, { name: 'Mayor 7', intervals: [0, 4, 7, 11] }, { name: 'menor 7', intervals: [0, 3, 7, 10] }, { name: 'Dominante 7', intervals: [0, 4, 7, 10] } ];
+                this.progressions = [ { name: 'I-V-vi-IV', chords: ['C', 'G', 'Am', 'F'] }, { name: 'vi-IV-I-V', chords: ['Am', 'F', 'C', 'G'] }, { name: 'I-vi-IV-V', chords: ['C', 'Am', 'F', 'G'] }, { name: 'ii-V-I', chords: ['Dm', 'G', 'C'] } ];
+                this.guitarChords = { 'C': { name: 'Do Mayor', frets: [ { string: 1, fret: 1, finger: 1 }, { string: 3, fret: 2, finger: 2 }, { string: 4, fret: 3, finger: 3 } ], open: [0, 2, 5], muted: [] }, 'G': { name: 'Sol Mayor', frets: [ { string: 4, fret: 2, finger: 1 }, { string: 5, fret: 3, finger: 2 }, { string: 0, fret: 3, finger: 3 } ], open: [1, 2, 3], muted: [] }, 'Am': { name: 'La menor', frets: [ { string: 1, fret: 1, finger: 1 }, { string: 2, fret: 2, finger: 3 }, { string: 3, fret: 2, finger: 2 } ], open: [0, 4, 5], muted: [] }, 'F': { name: 'Fa Mayor (Barra)', frets: [ { string: 0, fret: 1, finger: 1 }, { string: 1, fret: 1, finger: 1 }, { string: 2, fret: 1, finger: 1 }, { string: 3, fret: 2, finger: 2 }, { string: 4, fret: 3, finger: 3 }, { string: 5, fret: 3, finger: 4 } ], open: [], muted: [] }, 'Dm': { name: 'Re menor', frets: [ { string: 0, fret: 1, finger: 1 }, { string: 1, fret: 3, finger: 3 }, { string: 2, fret: 2, finger: 2 } ], open: [3], muted: [4, 5] } };
+                this.setupInstrumentSelector(); this.setupEarTrainingControls();
+            }
+            setupInstrumentSelector() { document.getElementById('instrumentSelect').addEventListener('change', (e) => { this.selectedInstrument = e.target.value; }); }
+            setupEarTrainingControls() {
+                document.getElementById('newInterval').addEventListener('click', () => this.playNewInterval()); document.getElementById('repeatInterval').addEventListener('click', () => this.repeatCurrentInterval());
+                document.getElementById('newChord').addEventListener('click', () => this.playNewChord()); document.getElementById('repeatChord').addEventListener('click', () => this.repeatCurrentChord());
+                document.getElementById('newProgression').addEventListener('click', () => this.playNewProgression()); document.getElementById('repeatProgression').addEventListener('click', () => this.repeatCurrentProgression());
+            }
+            initAudioContext() { if (!this.audioContext) { this.audioContext = new (window.AudioContext || window.webkitAudioContext)(); } }
+            playNewInterval() { this.initAudioContext(); this.currentInterval = this.intervals[Math.floor(Math.random() * this.intervals.length)]; this.playInterval(this.currentInterval.semitones); document.getElementById('intervalResult').textContent = '🎵 Escucha y selecciona...'; this.showOptions('interval'); }
+            repeatCurrentInterval() { if (this.currentInterval) this.playInterval(this.currentInterval.semitones); }
+            playNewChord() { this.initAudioContext(); this.currentChord = this.chords[Math.floor(Math.random() * this.chords.length)]; this.playChord(this.currentChord.intervals); document.getElementById('chordResult').textContent = '🎹 Escucha y selecciona...'; this.showOptions('chord'); document.getElementById('chordDiagram').classList.remove('active'); }
+            repeatCurrentChord() { if (this.currentChord) this.playChord(this.currentChord.intervals); }
+            playNewProgression() { this.initAudioContext(); this.currentProgression = this.progressions[Math.floor(Math.random() * this.progressions.length)]; this.playProgression(this.currentProgression.chords); document.getElementById('progressionResult').textContent = '🎼 Escucha y selecciona...'; this.showOptions('progression'); }
+            repeatCurrentProgression() { if (this.currentProgression) this.playProgression(this.currentProgression.chords); }
+            showOptions(type) {
+                const container = document.getElementById(`${type}Options`);
+                const data = type === 'interval' ? this.intervals : (type === 'chord' ? this.chords : this.progressions);
+                const current = this[`current${type.charAt(0).toUpperCase() + type.slice(1)}`];
+                container.innerHTML = ''; container.classList.add('active');
+                let options = [current];
+                while (options.length < 4) { const item = data[Math.floor(Math.random() * data.length)]; if (!options.find(opt => opt.name === item.name)) options.push(item); }
+                options.sort(() => Math.random() - 0.5);
+                options.forEach(opt => {
+                    const btn = document.createElement('button');
+                    btn.className = 'option-btn'; btn.textContent = opt.name;
+                    btn.addEventListener('click', () => this.checkAnswer(opt, current, btn, type));
+                    container.appendChild(btn);
+                });
+            }
+            checkAnswer(selected, correct, btn, type) {
+                const container = document.getElementById(`${type}Options`);
+                const resultDiv = document.getElementById(`${type}Result`);
+                container.querySelectorAll('.option-btn').forEach(b => {
+                    b.disabled = true;
+                    if (b.textContent === correct.name) b.classList.add('correct');
+                });
+                if (selected.name === correct.name) {
+                    resultDiv.textContent = `🎉 ¡Correcto! ${correct.name}`;
+                    resultDiv.style.color = 'var(--success-color)';
+                    if (type === 'chord') this.showChordDiagram(correct.name);
+                } else {
+                    btn.classList.add('incorrect');
+                    resultDiv.textContent = `❌ La respuesta era ${correct.name}`;
+                    resultDiv.style.color = 'var(--error-color)';
+                    if (type === 'chord') this.showChordDiagram(correct.name);
+                }
+                setTimeout(() => { container.classList.remove('active'); resultDiv.textContent = ''; resultDiv.style.color = 'var(--text-primary)'; }, 3000);
+            }
+            playInterval(semitones) {
+                const baseFreq = 261.63; const secondFreq = baseFreq * Math.pow(2, semitones / 12);
+                this.playTone(baseFreq, 0, 1);
+                setTimeout(() => { this.playTone(secondFreq, 0, 1); }, 1200);
+            }
+            playChord(intervals) {
+                const baseFreq = this.selectedInstrument === 'bass' ? 82.41 : 261.63;
+                intervals.forEach((interval, index) => { const freq = baseFreq * Math.pow(2, interval / 12); this.playTone(freq, index * 0.05, 2.5); });
+            }
+            playProgression(chordNames) {
+                const chordMap = { 'C': [0, 4, 7], 'Dm': [2, 5, 9], 'F': [5, 9, 12], 'G': [7, 11, 14], 'Am': [9, 12, 16] };
+                chordNames.forEach((name, index) => { setTimeout(() => { this.playChord(chordMap[name] || [0, 4, 7]); }, index * 1500); });
+            }
+            showChordDiagram(chordName) {
+                const key = Object.keys(this.guitarChords).find(k => this.guitarChords[k].name.includes(chordName.split(' ')[0]));
+                const guitarChord = this.guitarChords[key];
+                if (!guitarChord) { document.getElementById('chordDiagram').classList.remove('active'); return; }
+                const fretboard = document.getElementById('fretboard');
+                document.getElementById('chordTitle').textContent = guitarChord.name;
+                fretboard.innerHTML = '';
+                for (let i = 0; i <= 4; i++) { const fret = document.createElement('div'); fret.className = 'fret'; fret.style.top = `${i * 48}px`; fretboard.appendChild(fret); }
+                for (let i = 0; i < 6; i++) { const string = document.createElement('div'); string.className = 'string'; string.style.left = `${20 + i * 30}px`; fretboard.appendChild(string); }
+                guitarChord.frets.forEach(pos => { const f = document.createElement('div'); f.className = 'finger-position'; f.style.left = `${20 + pos.string * 30}px`; f.style.top = `${pos.fret * 48 - 24}px`; f.textContent = pos.finger; fretboard.appendChild(f); });
+                guitarChord.open.forEach(s => { const o = document.createElement('div'); o.className = 'open-string'; o.style.left = `${20 + s * 30}px`; fretboard.appendChild(o); });
+                guitarChord.muted.forEach(s => { const m = document.createElement('div'); m.className = 'muted-string'; m.style.left = `${20 + s * 30}px`; m.textContent = '×'; fretboard.appendChild(m); });
+                document.getElementById('chordDiagram').classList.add('active');
+            }
+            playTone(frequency, delay = 0, duration = 1) {
+                const startTime = this.audioContext.currentTime + delay;
+                const osc = this.audioContext.createOscillator();
+                const gain = this.audioContext.createGain();
+                osc.connect(gain); gain.connect(this.audioContext.destination);
+                osc.frequency.value = frequency;
+                switch (this.selectedInstrument) {
+                    case 'piano': osc.type = 'triangle'; gain.gain.setValueAtTime(0, startTime); gain.gain.linearRampToValueAtTime(0.15, startTime + 0.02); gain.gain.exponentialRampToValueAtTime(0.05, startTime + duration); break;
+                    case 'guitar': osc.type = 'sawtooth'; gain.gain.setValueAtTime(0, startTime); gain.gain.linearRampToValueAtTime(0.12, startTime + 0.005); gain.gain.exponentialRampToValueAtTime(0.02, startTime + duration); break;
+                    case 'bass': osc.type = 'sine'; gain.gain.setValueAtTime(0, startTime); gain.gain.linearRampToValueAtTime(0.18, startTime + 0.05); gain.gain.linearRampToValueAtTime(0.12, startTime + duration); break;
+                }
+                osc.start(startTime); osc.stop(startTime + duration);
+            }
+        }
+        
+        // Inicializar la aplicación
+        document.addEventListener('DOMContentLoaded', () => {
+            new GuitarWorshipTrainer();
+        });
     </script>
 </body>
 </html>
