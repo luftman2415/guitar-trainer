@@ -47,7 +47,7 @@ class Metronome {
         const time = this.audioContext.currentTime;
         const osc = this.audioContext.createOscillator(); const gain = this.audioContext.createGain();
         osc.connect(gain); gain.connect(this.audioContext.destination);
-        osc.type = this.app.appData.settings.metronome.sound;
+        osc.type = this.app.appData.settings.metronome.sound || 'square';
         const freq = [880, 440, 300][level]; const gainVal = [0.4, 0.3, 0.15][level];
         const duration = 0.05;
         osc.frequency.setValueAtTime(freq, time); gain.gain.setValueAtTime(0, time);
@@ -86,6 +86,32 @@ class Metronome {
                 restartIfPlaying();
             });
         }
+
+        // Configurar controles adicionales del metrónomo
+        const timeSignatureSelect = document.getElementById('timeSignature');
+        if (timeSignatureSelect) {
+            timeSignatureSelect.addEventListener('change', e => {
+                this.app.appData.settings.metronome.timeSignature = e.target.value;
+                this.app.saveData();
+                restartIfPlaying();
+            });
+        }
+
+        const soundSelect = document.getElementById('soundSelect');
+        if (soundSelect) {
+            soundSelect.addEventListener('change', e => {
+                this.app.appData.settings.metronome.sound = e.target.value;
+                this.app.saveData();
+            });
+        }
+
+        const accentToggle = document.getElementById('accentToggle');
+        if (accentToggle) {
+            accentToggle.addEventListener('change', e => {
+                this.app.appData.settings.metronome.accent = e.target.checked;
+                this.app.saveData();
+            });
+        }
     }
     
     setupSpeedTrainer() {
@@ -111,11 +137,49 @@ class Metronome {
         });
     }
     loadSettings() {
+        // Asegurar que la configuración del metrónomo tenga valores por defecto
+        if (!this.app.appData.settings.metronome) {
+            this.app.appData.settings.metronome = {};
+        }
+        
         this.bpm = this.app.appData.settings.metronome.bpm || 120;
         this.subdivision = this.app.appData.settings.metronome.subdivision || 1;
+        
+        // Asegurar que timeSignature tenga un valor por defecto
+        if (!this.app.appData.settings.metronome.timeSignature) {
+            this.app.appData.settings.metronome.timeSignature = '4/4';
+        }
+        
+        // Asegurar que sound tenga un valor por defecto
+        if (!this.app.appData.settings.metronome.sound) {
+            this.app.appData.settings.metronome.sound = 'square';
+        }
+        
+        // Asegurar que accent tenga un valor por defecto
+        if (this.app.appData.settings.metronome.accent === undefined) {
+            this.app.appData.settings.metronome.accent = true;
+        }
+        
         if (this.dom.bpmDisplay) this.dom.bpmDisplay.textContent = this.bpm;
         if (this.dom.bpmSlider) this.dom.bpmSlider.value = this.bpm;
         if (this.dom.subdivisionSelect) this.dom.subdivisionSelect.value = this.subdivision;
+        
+        // Actualizar elementos del DOM si existen
+        const timeSignatureSelect = document.getElementById('timeSignature');
+        if (timeSignatureSelect) {
+            timeSignatureSelect.value = this.app.appData.settings.metronome.timeSignature;
+        }
+        
+        const soundSelect = document.getElementById('soundSelect');
+        if (soundSelect) {
+            soundSelect.value = this.app.appData.settings.metronome.sound;
+        }
+        
+        const accentToggle = document.getElementById('accentToggle');
+        if (accentToggle) {
+            accentToggle.checked = this.app.appData.settings.metronome.accent;
+        }
+        
         this.app.saveData(); // Asegurar que la configuración se guarde
     }
     setBpm(newBpm) { 
@@ -129,7 +193,9 @@ class Metronome {
     start() {
         this.initAudio(); this.isPlaying = true; this.beat = 0;
         if (this.dom.playBtn) this.dom.playBtn.innerHTML = '⏸️ Pausar';
-        const { bpm, timeSignature, subdivision, accent } = this.app.appData.settings.metronome;
+        
+        // Asegurar que timeSignature tenga un valor válido
+        const { bpm, timeSignature = '4/4', subdivision = 1, accent = true } = this.app.appData.settings.metronome;
         const beatsPerMeasure = timeSignature === '6/8' ? 6 : parseInt(timeSignature.split('/')[0]);
         const intervalMs = (60 / bpm / subdivision) * 1000;
         
@@ -2907,6 +2973,7 @@ class GuitarWorshipTrainer {
         this.recorder.renderRecordings();
         this.practiceLog.renderLogList();
         this.practiceLog.updateStats();
+        this.updateHomeProgressCards(); // Actualizar tarjetas de progreso iniciales
         document.getElementById('copyright-year').textContent = new Date().getFullYear();
         this.showSection(this.currentSection);
     }
@@ -3082,6 +3149,7 @@ class GuitarWorshipTrainer {
         if (sectionId === 'setlists' && this.setlistManager) { this.setlistManager.renderSetlistList(); }
         if (sectionId === 'practice' && this.practicePlanner) { this.practicePlanner.renderRoutineList(); }
         if (sectionId === 'ear-trainer' && this.earTrainer) { this.earTrainer.startNewRound(); }
+        if (sectionId === 'inicio') { this.updateHomeProgressCards(); }
     }
     
     setupGlobalSearch() {
@@ -3120,7 +3188,12 @@ class GuitarWorshipTrainer {
             confirm: document.getElementById('confirmModalConfirm'),
             cancel: document.getElementById('confirmModalCancel')
         };
-        this.confirmModal.confirm.addEventListener('click', () => this.confirmModal.onConfirm && this.confirmModal.onConfirm());
+        this.confirmModal.confirm.addEventListener('click', () => {
+            if (this.confirmModal.onConfirm) {
+                this.confirmModal.onConfirm();
+            }
+            this.hideConfirmation();
+        });
         this.confirmModal.cancel.addEventListener('click', () => this.hideConfirmation());
         
         // Configurar modal de atajos de teclado
@@ -3161,14 +3234,40 @@ class GuitarWorshipTrainer {
     }
     showConfirmation(message, onConfirm) {
         this.confirmModal.message.textContent = message;
-        const newConfirmBtn = this.confirmModal.confirmBtn.cloneNode(true);
-        this.confirmModal.confirmBtn.parentNode.replaceChild(newConfirmBtn, this.confirmModal.confirmBtn);
-        this.confirmModal.confirmBtn = newConfirmBtn;
-        this.confirmModal.confirmBtn.addEventListener('click', () => { onConfirm(); this.hideConfirmation(); }, { once: true });
-        this.confirmModal.overlay.style.display = 'flex'; this.openModal();
+        this.confirmModal.onConfirm = onConfirm;
+        this.confirmModal.overlay.style.display = 'flex'; 
+        this.openModal();
     }
     hideConfirmation() { this.confirmModal.overlay.style.display = 'none'; this.closeModal(); }
     findSongById(id) { return this.appData.songs.find(song => song.id === id); }
+
+    updateHomeProgressCards() {
+        // Actualizar tarjetas de progreso en la página de inicio
+        const totalTimeEl = document.getElementById('homeTotalTime');
+        const totalSessionsEl = document.getElementById('homeTotalSessions');
+        const currentStreakEl = document.getElementById('homeCurrentStreak');
+        const totalSongsEl = document.getElementById('homeTotalSongs');
+
+        if (totalTimeEl) {
+            const totalMinutes = (this.appData.practiceLog || []).reduce((total, entry) => total + (entry.duration || 0), 0);
+            const hours = Math.floor(totalMinutes / 60);
+            const minutes = totalMinutes % 60;
+            totalTimeEl.textContent = `${hours}h ${minutes}m`;
+        }
+
+        if (totalSessionsEl) {
+            totalSessionsEl.textContent = (this.appData.practiceLog || []).length;
+        }
+
+        if (currentStreakEl && this.practiceLog) {
+            const streak = this.practiceLog.calculateCurrentStreak(this.appData.practiceLog || []);
+            currentStreakEl.textContent = `${streak} días`;
+        }
+
+        if (totalSongsEl) {
+            totalSongsEl.textContent = (this.appData.songs || []).length;
+        }
+    }
 }
 
 // =================================================================================

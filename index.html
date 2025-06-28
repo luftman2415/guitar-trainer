@@ -49,6 +49,42 @@
     <main class="main">
         <section id="inicio" class="section active">
             <div class="welcome"><h1>Bienvenido a Guitar Worship Trainer</h1><p>Tu herramienta todo-en-uno para mejorar tus habilidades.</p></div>
+            
+            <!-- Progress Cards Section -->
+            <div class="progress-cards-section">
+                <h2>📊 Tu Progreso</h2>
+                <div class="progress-cards-grid">
+                    <div class="progress-card">
+                        <div class="progress-card-icon">⏱️</div>
+                        <div class="progress-card-content">
+                            <h3>Tiempo Total</h3>
+                            <p id="homeTotalTime">0h 0m</p>
+                        </div>
+                    </div>
+                    <div class="progress-card">
+                        <div class="progress-card-icon">📅</div>
+                        <div class="progress-card-content">
+                            <h3>Sesiones</h3>
+                            <p id="homeTotalSessions">0</p>
+                        </div>
+                    </div>
+                    <div class="progress-card">
+                        <div class="progress-card-icon">🔥</div>
+                        <div class="progress-card-content">
+                            <h3>Racha Actual</h3>
+                            <p id="homeCurrentStreak">0 días</p>
+                        </div>
+                    </div>
+                    <div class="progress-card">
+                        <div class="progress-card-icon">🎵</div>
+                        <div class="progress-card-content">
+                            <h3>Canciones</h3>
+                            <p id="homeTotalSongs">0</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
             <div class="cards-grid">
                 <div class="card" data-section="tuner"><div class="card-icon">🎤</div><h3>Afinador</h3><p>Afina tu instrumento con precisión.</p></div>
                 <div class="card" data-section="songs"><div class="card-icon">🎵</div><h3>Repertorio</h3><p>Gestiona tu lista de canciones.</p></div>
@@ -128,8 +164,8 @@
                             <input type="number" id="endBpm" class="styled-input" value="120" min="40" max="240">
                         </div>
                         <div class="control-group">
-                            <label for="bpmIncrement">Incremento</label>
-                            <input type="number" id="bpmIncrement" class="styled-input" value="5" min="1" max="20">
+                            <label for="increment">Incremento</label>
+                            <input type="number" id="increment" class="styled-input" value="5" min="1" max="20">
                         </div>
                         <div class="control-group">
                             <label for="stepDuration">Duración por Paso (min)</label>
