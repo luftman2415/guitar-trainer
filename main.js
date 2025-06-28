@@ -25,12 +25,12 @@ class Metronome {
         this.dom = {
             bpmDisplay: document.getElementById('bpmDisplay'),
             bpmSlider: document.getElementById('bpmSlider'),
-            subdivisionSelect: document.getElementById('subdivisionSelect'),
+            subdivisionSelect: document.getElementById('subdivision'), // ID correcto
             playBtn: document.getElementById('playBtn'),
-            tapBtn: document.getElementById('tapBtn'),
+            tapBtn: document.getElementById('tapTempoBtn'), // ID correcto
             startSpeedTrainerBtn: document.getElementById('startSpeedTrainerBtn'),
             stopSpeedTrainerBtn: document.getElementById('stopSpeedTrainerBtn'),
-            speedTrainerDisplay: document.getElementById('speedTrainerDisplay')
+            speedTrainerDisplay: document.getElementById('speedTrainerDisplay') // Puede ser null
         };
         
         this.tapTimestamps = [];
@@ -56,8 +56,16 @@ class Metronome {
         osc.start(time); osc.stop(time + duration);
     }
     setupControls() {
-        this.dom.playBtn.addEventListener('click', () => this.togglePlay());
-        this.dom.tapBtn.addEventListener('click', () => this.handleTap());
+        // Verificar que los elementos existan antes de agregar event listeners
+        if (this.dom.playBtn) {
+            this.dom.playBtn.addEventListener('click', () => this.togglePlay());
+        }
+        
+        // Buscar el botón tap con el ID correcto
+        const tapBtn = document.getElementById('tapTempoBtn');
+        if (tapBtn) {
+            tapBtn.addEventListener('click', () => this.handleTap());
+        }
         
         const restartIfPlaying = () => { if (this.isPlaying) { this.stop(); this.start(); } };
         
@@ -68,8 +76,10 @@ class Metronome {
             });
         }
         
-        if (this.dom.subdivisionSelect) {
-            this.dom.subdivisionSelect.addEventListener('change', e => {
+        // Buscar el selector de subdivisiones con el ID correcto
+        const subdivisionSelect = document.getElementById('subdivision');
+        if (subdivisionSelect) {
+            subdivisionSelect.addEventListener('change', e => {
                 this.subdivision = parseInt(e.target.value);
                 this.app.appData.settings.metronome.subdivision = this.subdivision;
                 this.app.saveData(); // Guardar configuración
@@ -118,7 +128,7 @@ class Metronome {
     togglePlay() { this.isPlaying ? this.stop() : this.start(); }
     start() {
         this.initAudio(); this.isPlaying = true; this.beat = 0;
-        this.dom.playBtn.innerHTML = '⏸️ Pausar';
+        if (this.dom.playBtn) this.dom.playBtn.innerHTML = '⏸️ Pausar';
         const { bpm, timeSignature, subdivision, accent } = this.app.appData.settings.metronome;
         const beatsPerMeasure = timeSignature === '6/8' ? 6 : parseInt(timeSignature.split('/')[0]);
         const intervalMs = (60 / bpm / subdivision) * 1000;
@@ -129,12 +139,18 @@ class Metronome {
             let clickLevel = 2;
             if (subBeatIndex === 0) { clickLevel = (mainBeatIndex === 0 && accent) ? 0 : 1; }
             this.createClick(clickLevel);
-            if (clickLevel < 2) { this.dom.visualIndicator.classList.add('beat'); setTimeout(() => this.dom.visualIndicator.classList.remove('beat'), 100); }
+            // Buscar el indicador visual si existe
+            const visualIndicator = document.querySelector('.visual-indicator');
+            if (clickLevel < 2 && visualIndicator) { 
+                visualIndicator.classList.add('beat'); 
+                setTimeout(() => visualIndicator.classList.remove('beat'), 100); 
+            }
             this.beat = (this.beat + 1) % (beatsPerMeasure * subdivision);
         }, intervalMs);
     }
     stop() {
-        this.isPlaying = false; this.dom.playBtn.innerHTML = '▶️ Iniciar';
+        this.isPlaying = false; 
+        if (this.dom.playBtn) this.dom.playBtn.innerHTML = '▶️ Iniciar';
         clearInterval(this.metronomeInterval); this.metronomeInterval = null;
         if (this.audioContext && this.audioContext.state === 'running') this.audioContext.suspend();
     }
@@ -148,7 +164,10 @@ class Metronome {
             const newBpm = Math.round(60000 / avg);
             if (newBpm >= 40 && newBpm <= 240) {
                 this.setBpm(newBpm);
-                this.dom.bpmDisplay.classList.add('bpm-flash'); setTimeout(() => this.dom.bpmDisplay.classList.remove('bpm-flash'), 500);
+                if (this.dom.bpmDisplay) {
+                    this.dom.bpmDisplay.classList.add('bpm-flash'); 
+                    setTimeout(() => this.dom.bpmDisplay.classList.remove('bpm-flash'), 500);
+                }
             }
         }
         setTimeout(() => { if (this.tapTimestamps.length > 0 && Date.now() - this.tapTimestamps[this.tapTimestamps.length - 1] > 2000) this.tapTimestamps = []; }, 2100);
@@ -166,7 +185,7 @@ class Metronome {
             return;
         }
 
-        if (startBpm < 40 || startBpm > 240 || endBpm < 40 || endBpm > 240) {
+        if (startBpm < 40 || startBpm > 240) {
             alert('El BPM debe estar entre 40 y 240.');
             return;
         }
@@ -253,7 +272,7 @@ class Metronome {
         // Programar el siguiente paso
         this.speedTrainer.stepTimer = setTimeout(() => {
             this.nextSpeedTrainerStep();
-        }, this.speedTrainer.durationPerStep * 1000);
+        }, this.speedTrainer.stepDuration);
     }
 
     updateSpeedTrainerDisplay() {
@@ -314,14 +333,16 @@ class Tuner {
             startBtn: document.getElementById('tunerStartBtn'), 
             status: document.getElementById('tunerStatus') 
         }; 
-        this.dom.startBtn.addEventListener('click', () => this.toggleTuner()); 
+        if (this.dom.startBtn) {
+            this.dom.startBtn.addEventListener('click', () => this.toggleTuner()); 
+        }
     }
     toggleTuner() { this.isTunerOn ? this.stop() : this.start(); }
     start() { 
         navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => { 
             this.isTunerOn = true; 
-            this.dom.startBtn.textContent = 'Desactivar Afinador'; 
-            this.dom.status.style.display = 'none'; 
+            if (this.dom.startBtn) this.dom.startBtn.textContent = 'Desactivar Afinador'; 
+            if (this.dom.status) this.dom.status.style.display = 'none'; 
             
             // Usar el AudioContext compartido en lugar de crear uno nuevo
             if (this.audioContext.state === 'suspended') {
@@ -334,7 +355,7 @@ class Tuner {
             this.source.connect(this.analyser); 
             this.updatePitch(); 
         }).catch(() => { 
-            this.dom.status.textContent = 'Error: Permiso para micrófono denegado.'; 
+            if (this.dom.status) this.dom.status.textContent = 'Error: Permiso para micrófono denegado.'; 
         }); 
     }
     stop() { 
@@ -342,12 +363,28 @@ class Tuner {
         if (this.source) this.source.mediaStream.getTracks().forEach(track => track.stop()); 
         // No cerrar el AudioContext compartido
         if (this.animationFrameId) cancelAnimationFrame(this.animationFrameId); 
-        this.dom.startBtn.textContent = 'Activar Afinador'; 
+        if (this.dom.startBtn) this.dom.startBtn.textContent = 'Activar Afinador'; 
         this.resetUI(); 
     }
     updatePitch() { const buffer = new Float32Array(this.analyser.fftSize); this.analyser.getFloatTimeDomainData(buffer); const pitch = this.autoCorrelate(buffer, this.audioContext.sampleRate); if (pitch !== -1) { this.updateUI(this.noteFromPitch(pitch)); } if (this.isTunerOn) this.animationFrameId = requestAnimationFrame(() => this.updatePitch()); }
-    updateUI({ noteName, detune }) { this.dom.note.textContent = noteName.charAt(0); this.dom.sharp.style.opacity = noteName.includes('♯') ? 1 : 0; this.dom.flat.style.opacity = noteName.includes('♭') ? 1 : 0; this.dom.cents.textContent = `${detune.toFixed(0)} cents`; const rotation = Math.max(-90, Math.min(90, detune * 1.8)); this.dom.needle.style.transform = `rotate(${rotation}deg)`; this.dom.needle.style.backgroundColor = Math.abs(detune) < 5 ? 'var(--success-color)' : 'var(--text-primary)'; }
-    resetUI() { this.dom.note.textContent = '--'; this.dom.sharp.style.opacity = 0; this.dom.flat.style.opacity = 0; this.dom.cents.textContent = '- cents'; this.dom.needle.style.transform = 'rotate(0deg)'; }
+    updateUI({ noteName, detune }) { 
+        if (this.dom.note) this.dom.note.textContent = noteName.charAt(0); 
+        if (this.dom.sharp) this.dom.sharp.style.opacity = noteName.includes('♯') ? 1 : 0; 
+        if (this.dom.flat) this.dom.flat.style.opacity = noteName.includes('♭') ? 1 : 0; 
+        if (this.dom.cents) this.dom.cents.textContent = `${detune.toFixed(0)} cents`; 
+        const rotation = Math.max(-90, Math.min(90, detune * 1.8)); 
+        if (this.dom.needle) {
+            this.dom.needle.style.transform = `rotate(${rotation}deg)`; 
+            this.dom.needle.style.backgroundColor = Math.abs(detune) < 5 ? 'var(--success-color)' : 'var(--text-primary)'; 
+        }
+    }
+    resetUI() { 
+        if (this.dom.note) this.dom.note.textContent = '--'; 
+        if (this.dom.sharp) this.dom.sharp.style.opacity = 0; 
+        if (this.dom.flat) this.dom.flat.style.opacity = 0; 
+        if (this.dom.cents) this.dom.cents.textContent = '- cents'; 
+        if (this.dom.needle) this.dom.needle.style.transform = 'rotate(0deg)'; 
+    }
     noteFromPitch(frequency) { const noteNum = 12 * (Math.log(frequency / this.app.appData.settings.tuner.a4) / Math.log(2)); const roundedNote = Math.round(noteNum) + 69; const noteName = this.noteStrings[roundedNote % 12]; const expectedFrequency = this.app.appData.settings.tuner.a4 * Math.pow(2, (roundedNote - 69) / 12); const detune = 1200 * Math.log2(frequency / expectedFrequency); return { noteName, detune }; }
     autoCorrelate(buf, sampleRate) { let size = buf.length, rms = 0; for (let i = 0; i < size; i++) rms += buf[i] * buf[i]; rms = Math.sqrt(rms / size); if (rms < 0.01) return -1; let r1 = 0, r2 = size - 1, thres = 0.2; for (let i = 0; i < size / 2; i++) if (Math.abs(buf[i]) < thres) { r1 = i; break; } for (let i = 1; i < size / 2; i++) if (Math.abs(buf[size - i]) < thres) { r2 = size - i; break; } buf = buf.slice(r1, r2); size = buf.length; let c = new Float32Array(size).fill(0); for (let i = 0; i < size; i++) for (let j = 0; j < size - i; j++) c[i] = c[i] + buf[j] * buf[j + i]; let d = 0; while (c[d] > c[d + 1]) d++; let maxval = -1, maxpos = -1; for (let i = d; i < size; i++) { if (c[i] > maxval) { maxval = c[i]; maxpos = i; } } let T0 = maxpos; let x1 = c[T0 - 1], x2 = c[T0], x3 = c[T0 + 1]; let a = (x1 + x3 - 2 * x2) / 2; let b = (x3 - x1) / 2; if (a) T0 = T0 - b / (2 * a); return sampleRate / T0; }
 }
@@ -1280,22 +1317,141 @@ class PracticePlanner {
 }
 
 class ProgressionAnalyzer {
-    constructor(app) { this.app = app; this.notes = "C C# D D# E F F# G G# A A# B".split(" "); this.majorScaleIntervals = [0, 2, 4, 5, 7, 9, 11]; this.majorScaleDegrees = [{ roman: "I", type: "major" }, { roman: "ii", type: "minor" }, { roman: "iii", type: "minor" }, { roman: "IV", type: "major" }, { roman: "V", type: "major" }, { roman: "vi", type: "minor" }, { roman: "vii°", type: "diminished" }]; document.getElementById('analyzeProgressionBtn').addEventListener('click', () => this.analyze()); }
+    constructor(app) { 
+        this.app = app; 
+        this.notes = "C C# D D# E F F# G G# A A# B".split(" "); 
+        this.majorScaleIntervals = [0, 2, 4, 5, 7, 9, 11]; 
+        this.majorScaleDegrees = [{ roman: "I", type: "major" }, { roman: "ii", type: "minor" }, { roman: "iii", type: "minor" }, { roman: "IV", type: "major" }, { roman: "V", type: "major" }, { roman: "vi", type: "minor" }, { roman: "vii°", type: "diminished" }]; 
+        const analyzeBtn = document.getElementById('analyzeProgressionBtn');
+        if (analyzeBtn) {
+            analyzeBtn.addEventListener('click', () => this.analyze()); 
+        }
+    }
     parseChord(str) { const match = str.trim().match(/^([A-G][#b]?)(.*)/); if (!match) return null; let root = match[1].replace('b', '#'); let quality = 'major'; if (match[2].includes('m') && !match[2].includes('maj')) quality = 'minor'; if (match[2].includes('dim') || match[2].includes('°')) quality = 'diminished'; return { root, type: quality, original: str.trim() }; }
     getScaleNotes(rootNote) { const rootIndex = this.notes.indexOf(rootNote); return this.majorScaleIntervals.map(i => this.notes[(rootIndex + i) % 12]); }
-    analyze() { const resultDiv = document.getElementById('progressionResult'); const chords = document.getElementById('progressionInput').value.split(/[\s,|]+/).filter(c => c).map(c => this.parseChord(c)).filter(Boolean); if (chords.length === 0) { resultDiv.innerHTML = `<p>Por favor, introduce una progresión válida.</p>`; return; } let bestKey = { key: null, score: -1 }; this.notes.forEach(keyNote => { const scaleNotes = this.getScaleNotes(keyNote); const harmonicField = this.majorScaleDegrees.map((d, i) => ({ ...d, root: scaleNotes[i] })); let score = 0; chords.forEach(chord => { if (harmonicField.some(fc => fc.root === chord.root && fc.type === chord.type)) score++; }); if (score > bestKey.score) bestKey = { key: keyNote, score }; }); if (bestKey.key && bestKey.score > 0) { const key = bestKey.key; const romanNumerals = chords.map(chord => { const scaleNotes = this.getScaleNotes(key); const hf = this.majorScaleDegrees.map((d, i) => ({ ...d, root: scaleNotes[i] })); const fc = hf.find(f => f.root === chord.root && f.type === chord.type); return fc ? `<span class="roman-numeral-pill">${fc.roman}</span>` : `<span class="roman-numeral-pill error">?</span>`; }).join(''); resultDiv.innerHTML = `<div class="analysis-item"><span class="analysis-label">Tonalidad:</span> <span class="roman-numeral-pill main-key">${key} Mayor</span></div><div class="analysis-item"><span class="analysis-label">Grados:</span> <div class="roman-numeral-progression">${romanNumerals}</div></div><div class="analysis-item"><span class="analysis-label">Escalas:</span> <ul><li>${key} Mayor</li><li>${this.getScaleNotes(key)[5]} Pentatónica menor</li></ul></div>`; } else { resultDiv.innerHTML = `<p>No se pudo determinar una tonalidad clara.</p>`; } }
+    analyze() { 
+        const resultDiv = document.getElementById('progressionResult'); 
+        const inputElement = document.getElementById('progressionInput');
+        
+        if (!resultDiv || !inputElement) {
+            console.warn('Elementos del analizador de progresiones no encontrados');
+            return;
+        }
+        
+        const chords = inputElement.value.split(/[\s,|]+/).filter(c => c).map(c => this.parseChord(c)).filter(Boolean); 
+        if (chords.length === 0) { 
+            resultDiv.innerHTML = `<p>Por favor, introduce una progresión válida.</p>`; 
+            return; 
+        } 
+        let bestKey = { key: null, score: -1 }; 
+        this.notes.forEach(keyNote => { 
+            const scaleNotes = this.getScaleNotes(keyNote); 
+            const harmonicField = this.majorScaleDegrees.map((d, i) => ({ ...d, root: scaleNotes[i] })); 
+            let score = 0; 
+            chords.forEach(chord => { 
+                if (harmonicField.some(fc => fc.root === chord.root && fc.type === chord.type)) score++; 
+            }); 
+            if (score > bestKey.score) bestKey = { key: keyNote, score }; 
+        }); 
+        if (bestKey.key && bestKey.score > 0) { 
+            const key = bestKey.key; 
+            const romanNumerals = chords.map(chord => { 
+                const scaleNotes = this.getScaleNotes(key); 
+                const hf = this.majorScaleDegrees.map((d, i) => ({ ...d, root: scaleNotes[i] })); 
+                const fc = hf.find(f => f.root === chord.root && f.type === chord.type); 
+                return fc ? `<span class="roman-numeral-pill">${fc.roman}</span>` : `<span class="roman-numeral-pill error">?</span>`; 
+            }).join(''); 
+            resultDiv.innerHTML = `<div class="analysis-item"><span class="analysis-label">Tonalidad:</span> <span class="roman-numeral-pill main-key">${key} Mayor</span></div><div class="analysis-item"><span class="analysis-label">Grados:</span> <div class="roman-numeral-progression">${romanNumerals}</div></div><div class="analysis-item"><span class="analysis-label">Escalas:</span> <ul><li>${key} Mayor</li><li>${this.getScaleNotes(key)[5]} Pentatónica menor</li></ul></div>`; 
+        } else { 
+            resultDiv.innerHTML = `<p>No se pudo determinar una tonalidad clara.</p>`; 
+        } 
+    }
 }
 
 class IdeaRecorder {
-    constructor(app) { this.app = app; this.recBtn = document.getElementById('recBtn'); this.recTime = document.getElementById('recTime'); this.recList = document.getElementById('recList'); this.recStatus = document.getElementById('recStatus'); this.mediaRecorder = null; this.isRecording = false; this.chunks = []; this.timerInterval = null; this.startTime = 0; this.setupEvents(); }
-    setupEvents() { this.recBtn.addEventListener('click', () => this.toggleRecording()); }
+    constructor(app) { 
+        this.app = app; 
+        this.recBtn = document.getElementById('recBtn'); 
+        this.recTime = document.getElementById('recTime'); 
+        this.recList = document.getElementById('recList'); 
+        this.recStatus = document.getElementById('recStatus'); 
+        this.mediaRecorder = null; 
+        this.isRecording = false; 
+        this.chunks = []; 
+        this.timerInterval = null; 
+        this.startTime = 0; 
+        this.setupEvents(); 
+    }
+    setupEvents() { 
+        if (this.recBtn) {
+            this.recBtn.addEventListener('click', () => this.toggleRecording()); 
+        }
+    }
     async toggleRecording() { if (this.isRecording) this.stopRecording(); else await this.startRecording(); }
-    async startRecording() { try { const stream = await navigator.mediaDevices.getUserMedia({ audio: true }); this.mediaRecorder = new MediaRecorder(stream); this.mediaRecorder.ondataavailable = e => this.chunks.push(e.data); this.mediaRecorder.onstop = () => this.saveRecording(); this.chunks = []; this.mediaRecorder.start(); this.isRecording = true; this.recBtn.textContent = '■ Detener'; this.recBtn.classList.add('recording'); this.recStatus.textContent = "Grabando..."; this.startTimer(); } catch (err) { this.recStatus.textContent = "Error: No se pudo acceder al micrófono."; } }
-    stopRecording() { if (!this.mediaRecorder || !this.isRecording) return; this.mediaRecorder.stop(); this.mediaRecorder.stream.getTracks().forEach(track => track.stop()); this.isRecording = false; this.recBtn.textContent = '● Grabar'; this.recBtn.classList.remove('recording'); this.recStatus.textContent = "Procesando..."; this.stopTimer(); }
-    startTimer() { this.startTime = Date.now(); this.timerInterval = setInterval(() => { const elapsed = Math.floor((Date.now() - this.startTime) / 1000); const m = String(Math.floor(elapsed / 60)).padStart(2, '0'); const s = String(elapsed % 60).padStart(2, '0'); this.recTime.textContent = `${m}:${s}`; }, 1000); }
-    stopTimer() { clearInterval(this.timerInterval); this.recTime.textContent = "00:00"; }
-    saveRecording() { const blob = new Blob(this.chunks, { type: 'audio/webm' }); const reader = new FileReader(); reader.onloadend = () => { const rec = { id: `rec_${Date.now()}`, name: `Grabación ${new Date().toLocaleString()}`, dataUrl: reader.result }; this.app.appData.recordings.unshift(rec); this.app.saveData(); this.renderRecordings(); this.chunks = []; this.recStatus.textContent = "Grabación guardada."; }; reader.readAsDataURL(blob); }
-    renderRecordings() { this.recList.innerHTML = ''; this.app.appData.recordings.forEach(rec => { const li = document.createElement('li'); li.innerHTML = `<div class="rec-info"><input type="text" value="${rec.name}" data-id="${rec.id}" class="rec-name-input" /><audio controls src="${rec.dataUrl}"></audio></div><button class="button small-btn-danger delete-rec" data-id="${rec.id}">🗑️</button>`; this.recList.appendChild(li); }); this.recList.querySelectorAll('.rec-name-input').forEach(i => i.addEventListener('change', e => this.updateRecordingName(e.target.dataset.id, e.target.value))); this.recList.querySelectorAll('.delete-rec').forEach(b => b.addEventListener('click', e => this.deleteRecording(e.target.dataset.id))); }
+    async startRecording() { 
+        try { 
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true }); 
+            this.mediaRecorder = new MediaRecorder(stream); 
+            this.mediaRecorder.ondataavailable = e => this.chunks.push(e.data); 
+            this.mediaRecorder.onstop = () => this.saveRecording(); 
+            this.chunks = []; 
+            this.mediaRecorder.start(); 
+            this.isRecording = true; 
+            if (this.recBtn) this.recBtn.textContent = '■ Detener'; 
+            if (this.recBtn) this.recBtn.classList.add('recording'); 
+            if (this.recStatus) this.recStatus.textContent = "Grabando..."; 
+            this.startTimer(); 
+        } catch (err) { 
+            if (this.recStatus) this.recStatus.textContent = "Error: No se pudo acceder al micrófono."; 
+        } 
+    }
+    stopRecording() { 
+        if (!this.mediaRecorder || !this.isRecording) return; 
+        this.mediaRecorder.stop(); 
+        this.mediaRecorder.stream.getTracks().forEach(track => track.stop()); 
+        this.isRecording = false; 
+        if (this.recBtn) this.recBtn.textContent = '● Grabar'; 
+        if (this.recBtn) this.recBtn.classList.remove('recording'); 
+        if (this.recStatus) this.recStatus.textContent = "Procesando..."; 
+        this.stopTimer(); 
+    }
+    startTimer() { 
+        this.startTime = Date.now(); 
+        this.timerInterval = setInterval(() => { 
+            const elapsed = Math.floor((Date.now() - this.startTime) / 1000); 
+            const m = String(Math.floor(elapsed / 60)).padStart(2, '0'); 
+            const s = String(elapsed % 60).padStart(2, '0'); 
+            if (this.recTime) this.recTime.textContent = `${m}:${s}`; 
+        }, 1000); 
+    }
+    stopTimer() { 
+        clearInterval(this.timerInterval); 
+        if (this.recTime) this.recTime.textContent = "00:00"; 
+    }
+    saveRecording() { 
+        const blob = new Blob(this.chunks, { type: 'audio/webm' }); 
+        const reader = new FileReader(); 
+        reader.onloadend = () => { 
+            const rec = { id: `rec_${Date.now()}`, name: `Grabación ${new Date().toLocaleString()}`, dataUrl: reader.result }; 
+            this.app.appData.recordings.unshift(rec); 
+            this.app.saveData(); 
+            this.renderRecordings(); 
+            this.chunks = []; 
+            if (this.recStatus) this.recStatus.textContent = "Grabación guardada."; 
+        }; 
+        reader.readAsDataURL(blob); 
+    }
+    renderRecordings() { 
+        if (!this.recList) return;
+        this.recList.innerHTML = ''; 
+        this.app.appData.recordings.forEach(rec => { 
+            const li = document.createElement('li'); 
+            li.innerHTML = `<div class="rec-info"><input type="text" value="${rec.name}" data-id="${rec.id}" class="rec-name-input" /><audio controls src="${rec.dataUrl}"></audio></div><button class="button small-btn-danger delete-rec" data-id="${rec.id}">🗑️</button>`; 
+            this.recList.appendChild(li); 
+        }); 
+        this.recList.querySelectorAll('.rec-name-input').forEach(i => i.addEventListener('change', e => this.updateRecordingName(e.target.dataset.id, e.target.value))); 
+        this.recList.querySelectorAll('.delete-rec').forEach(b => b.addEventListener('click', e => this.deleteRecording(e.target.dataset.id))); 
+    }
     updateRecordingName(id, name) { const rec = this.app.appData.recordings.find(r => r.id === id); if (rec) { rec.name = name; this.app.saveData(); } }
     deleteRecording(id) { this.app.showConfirmation('¿Seguro que quieres borrar esta grabación?', () => { this.app.appData.recordings = this.app.appData.recordings.filter(r => r.id !== id); this.app.saveData(); this.renderRecordings(); }); }
 }
@@ -1342,16 +1498,27 @@ class ScaleVisualizer {
         this.harmonicFieldContainer = document.getElementById('harmonicFieldContainer');
         this.viewSwitcher = document.getElementById('scaleViewSwitcher');
         
-        this.rootSelect.addEventListener('change', () => this.render()); 
-        this.scaleSelect.addEventListener('change', () => this.render()); 
-        this.tuningSelect.addEventListener('change', () => this.changeTuning());
-        this.viewSwitcher.addEventListener('change', () => this.render());
+        // Verificar que los elementos existan antes de agregar event listeners
+        if (this.rootSelect) {
+            this.rootSelect.addEventListener('change', () => this.render()); 
+        }
+        if (this.scaleSelect) {
+            this.scaleSelect.addEventListener('change', () => this.render()); 
+        }
+        if (this.tuningSelect) {
+            this.tuningSelect.addEventListener('change', () => this.changeTuning());
+        }
+        if (this.viewSwitcher) {
+            this.viewSwitcher.addEventListener('change', () => this.render());
+        }
         
         // Cargar afinación guardada
         this.loadSavedTuning();
     }
     
     changeTuning() {
+        if (!this.tuningSelect) return;
+        
         const tuningName = this.tuningSelect.value;
         this.tuning = this.tunings[tuningName];
         
@@ -1364,6 +1531,8 @@ class ScaleVisualizer {
     }
     
     loadSavedTuning() {
+        if (!this.tuningSelect) return;
+        
         const savedTuning = this.app.appData.settings.scaleTuning;
         if (savedTuning && this.tunings[savedTuning]) {
             this.tuning = this.tunings[savedTuning];
@@ -1372,50 +1541,79 @@ class ScaleVisualizer {
     }
     
     getSelectsAsHtml(prefix) {
+        if (!this.rootSelect || !this.scaleSelect) {
+            return { rootSelect: '', scaleSelect: '' };
+        }
+        
         const rootSelectHtml = `<select id="${prefix}RootNoteSelect" name="rootNote" class="styled-select">${this.rootSelect.innerHTML}</select>`;
         const scaleSelectHtml = `<select id="${prefix}ScaleTypeSelect" name="scaleType" class="styled-select">${this.scaleSelect.innerHTML}</select>`;
         return { rootSelect: rootSelectHtml, scaleSelect: scaleSelectHtml };
     }
 
     render() {
+        if (!this.fretboardContainer || !this.rootSelect || !this.scaleSelect || !this.viewSwitcher) {
+            console.warn('Elementos del visualizador de escalas no encontrados');
+            return;
+        }
+        
         this.fretboardContainer.innerHTML = '';
         const visual = this._createFretboardVisual();
         this.fretboardContainer.appendChild(visual);
 
-        const rootNoteName = this.rootSelect.value.split('/')[0].trim(); const rootIndex = this.notes.indexOf(rootNoteName);
-        const scaleKey = this.scaleSelect.value; const scaleIntervals = this.scales[scaleKey];
-        const currentView = this.viewSwitcher.querySelector('input:checked').value;
+        const rootNoteName = this.rootSelect.value.split('/')[0].trim(); 
+        const rootIndex = this.notes.indexOf(rootNoteName);
+        const scaleKey = this.scaleSelect.value; 
+        const scaleIntervals = this.scales[scaleKey];
+        const currentView = this.viewSwitcher.querySelector('input:checked')?.value || 'scale';
         const isDiatonic = scaleIntervals.length === 7;
         const scaleNoteIndexes = scaleIntervals.map(i => (rootIndex + i) % 12);
         
-        let notesToShow = new Set(); let noteClasses = {};
+        let notesToShow = new Set(); 
+        let noteClasses = {};
 
         if (currentView === 'scale' || !isDiatonic) {
             notesToShow = new Set(scaleNoteIndexes);
             scaleNoteIndexes.forEach(n => noteClasses[n] = 'scale-note');
         } else {
             for (let i = 0; i < 7; i++) {
-                const degreeRoot = scaleNoteIndexes[i]; const third = scaleNoteIndexes[(i + 2) % 7];
+                const degreeRoot = scaleNoteIndexes[i]; 
+                const third = scaleNoteIndexes[(i + 2) % 7];
                 const fifth = scaleNoteIndexes[(i + 4) % 7];
-                if (currentView === 'triads') { [degreeRoot, third, fifth].forEach(n => { notesToShow.add(n); noteClasses[n] = 'triad-note'; }); } 
-                else if (currentView === 'arpeggios') { const seventh = scaleNoteIndexes[(i + 6) % 7]; [degreeRoot, third, fifth, seventh].forEach(n => { notesToShow.add(n); noteClasses[n] = 'arpeggio-note'; }); }
+                if (currentView === 'triads') { 
+                    [degreeRoot, third, fifth].forEach(n => { 
+                        notesToShow.add(n); 
+                        noteClasses[n] = 'triad-note'; 
+                    }); 
+                } 
+                else if (currentView === 'arpeggios') { 
+                    const seventh = scaleNoteIndexes[(i + 6) % 7]; 
+                    [degreeRoot, third, fifth, seventh].forEach(n => { 
+                        notesToShow.add(n); 
+                        noteClasses[n] = 'arpeggio-note'; 
+                    }); 
+                }
             }
         }
         
         const grid = visual.querySelector('.fretboard-grid');
-        this.tuning.slice().reverse().forEach((openNoteIndex, stringIndex) => {
-            for (let fret = 0; fret <= 12; fret++) {
-                const noteIndex = (openNoteIndex + fret) % 12;
-                if (notesToShow.has(noteIndex)) {
-                    const cell = grid.querySelector(`.fret-cell[data-string="${5-stringIndex}"][data-fret="${fret}"]`);
-                    const dot = document.createElement('div');
-                    dot.className = 'note-dot';
-                    dot.textContent = this.notes[noteIndex]; dot.classList.add(noteClasses[noteIndex] || 'scale-note');
-                    if (noteIndex === rootIndex) dot.classList.add('root-note');
-                    cell.appendChild(dot);
+        if (grid) {
+            this.tuning.slice().reverse().forEach((openNoteIndex, stringIndex) => {
+                for (let fret = 0; fret <= 12; fret++) {
+                    const noteIndex = (openNoteIndex + fret) % 12;
+                    if (notesToShow.has(noteIndex)) {
+                        const cell = grid.querySelector(`.fret-cell[data-string="${5-stringIndex}"][data-fret="${fret}"]`);
+                        if (cell) {
+                            const dot = document.createElement('div');
+                            dot.className = 'note-dot';
+                            dot.textContent = this.notes[noteIndex]; 
+                            dot.classList.add(noteClasses[noteIndex] || 'scale-note');
+                            if (noteIndex === rootIndex) dot.classList.add('root-note');
+                            cell.appendChild(dot);
+                        }
+                    }
                 }
-            }
-        });
+            });
+        }
         this.renderHarmonicField(rootIndex, scaleKey, scaleIntervals);
     }
 
@@ -1456,6 +1654,8 @@ class ScaleVisualizer {
     }
 
     renderHarmonicField(rootIndex, scaleKey, scaleIntervals) {
+        if (!this.harmonicFieldContainer) return;
+        
         this.harmonicFieldContainer.innerHTML = '';
         const degrees = this.harmonicFields[scaleKey]; 
         
@@ -1472,7 +1672,8 @@ class ScaleVisualizer {
         this.harmonicFieldContainer.style.display = 'block';
 
         this.harmonicFieldContainer.appendChild(Object.assign(document.createElement('h4'), {textContent:'Campo Armónico (Acordes de la Escala)'}));
-        const chordsContainer = document.createElement('div'); chordsContainer.className = 'roman-numeral-progression';
+        const chordsContainer = document.createElement('div'); 
+        chordsContainer.className = 'roman-numeral-progression';
         degrees.forEach((degree, i) => {
             const noteIndex = (rootIndex + scaleIntervals[i]) % 12; 
             let chordName = this.notes[noteIndex];
@@ -1480,7 +1681,8 @@ class ScaleVisualizer {
             if (degree.t === 'dim') chordName += '°';
             if (degree.t === 'aug') chordName += '+';
 
-            const pill = document.createElement('span'); pill.className = 'roman-numeral-pill';
+            const pill = document.createElement('span'); 
+            pill.className = 'roman-numeral-pill';
             pill.innerHTML = `<span class="degree-roman">${degree.r}</span> ${chordName}`;
             chordsContainer.appendChild(pill);
         });
