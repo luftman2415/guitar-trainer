@@ -181,6 +181,7 @@
                     </div>
                 </div>
             </div>
+            <div id="speedTrainerDisplay" class="speed-trainer-display"></div>
         </section>
 
         <section id="songs" class="section">
@@ -332,39 +333,28 @@
         <section id="circle-of-fifths" class="section">
             <div class="circle-of-fifths-container">
                 <h1 style="text-align:center;">Círculo de Quintas Interactivo</h1>
-                
                 <div class="circle-controls">
                     <button id="resetCircleBtn" class="button">🔄 Resetear</button>
                     <button id="showAllChordsBtn" class="button">🎵 Ver Todos los Acordes</button>
                 </div>
-                
                 <div class="circle-main">
                     <div class="circle-svg-container">
                         <svg id="circleSvg" class="circle-svg" viewBox="0 0 600 600">
                             <!-- El SVG se generará dinámicamente -->
                         </svg>
                     </div>
-                    
                     <div class="circle-info-panel">
-                        <div class="key-info">
-                            <h3>Información de Tonalidad</h3>
-                            <div id="keyInfo">
-                                <p>Haz clic en una tonalidad del círculo para ver su información.</p>
-                            </div>
+                        <div id="keyInfo" class="key-info">
+                            <h3>Selecciona una tonalidad</h3>
+                            <p>Haz clic en cualquier nota del círculo para ver su información armónica</p>
                         </div>
-                        
-                        <div class="chord-info">
+                        <div id="chordInfo" class="chord-info" style="display:none;">
                             <h3>Acordes Diatónicos</h3>
-                            <div id="chordInfo">
-                                <p>Se mostrarán los acordes de la tonalidad seleccionada.</p>
-                            </div>
+                            <div id="diatonicChords"></div>
                         </div>
-                        
-                        <div class="scale-info">
+                        <div id="scaleInfo" class="scale-info" style="display:none;">
                             <h3>Escalas Relacionadas</h3>
-                            <div id="scaleInfo">
-                                <p>Se mostrarán las escalas relacionadas con la tonalidad.</p>
-                            </div>
+                            <div id="relatedScales"></div>
                         </div>
                     </div>
                 </div>

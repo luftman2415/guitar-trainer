@@ -2627,15 +2627,17 @@ class CircleOfFifths {
         const isMinor = key.includes('m');
         const rootNote = isMinor ? key.replace('m', '') : key;
         const relativeKey = this.getRelativeKey(key);
-        
-        keyInfo.innerHTML = `
-            <h3>${key} ${isMinor ? 'menor' : 'Mayor'}</h3>
-            <div class="key-details">
-                <p><strong>Tónica:</strong> ${rootNote}</p>
-                <p><strong>Relativa:</strong> ${relativeKey}</p>
-                <p><strong>Armadura:</strong> ${this.getKeySignature(key)}</p>
-            </div>
-        `;
+
+        if (keyInfo) {
+            keyInfo.innerHTML = `
+                <h3>${key} ${isMinor ? 'menor' : 'Mayor'}</h3>
+                <div class="key-details">
+                    <p><strong>Tónica:</strong> ${rootNote}</p>
+                    <p><strong>Relativa:</strong> ${relativeKey}</p>
+                    <p><strong>Armadura:</strong> ${this.getKeySignature(key)}</p>
+                </div>
+            `;
+        }
 
         // Acordes diatónicos
         const diatonicChords = this.getDiatonicChords(key);
@@ -2649,8 +2651,8 @@ class CircleOfFifths {
             `;
         }).join('');
 
-        diatonicChordsEl.innerHTML = diatonicChordsHtml;
-        chordInfo.style.display = 'block';
+        if (diatonicChordsEl) diatonicChordsEl.innerHTML = diatonicChordsHtml;
+        if (chordInfo) chordInfo.style.display = 'block';
 
         // Escalas relacionadas
         const relatedScales = this.getRelatedScales(key);
@@ -2661,8 +2663,8 @@ class CircleOfFifths {
             </div>
         `).join('');
 
-        relatedScalesEl.innerHTML = scalesHtml;
-        scaleInfo.style.display = 'block';
+        if (relatedScalesEl) relatedScalesEl.innerHTML = scalesHtml;
+        if (scaleInfo) scaleInfo.style.display = 'block';
     }
 
     getRelativeKey(key) {
