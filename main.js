@@ -2163,6 +2163,30 @@ class PracticeLog {
         document.getElementById('addPracticeEntryBtn').addEventListener('click', () => this.showAddEntryModal());
         document.getElementById('logFilterType').addEventListener('change', () => this.renderLogList());
         document.getElementById('logFilterDate').addEventListener('change', () => this.renderLogList());
+        // Nuevo: botón de registro rápido de sesión
+        const logSessionBtn = document.getElementById('logSessionBtn');
+        if (logSessionBtn) {
+            logSessionBtn.addEventListener('click', () => this.quickLogSession());
+        }
+    }
+
+    quickLogSession() {
+        // Registro rápido: tipo personalizado, duración 30 min, sin notas
+        this.addEntry({
+            id: `entry_${Date.now()}`,
+            type: 'custom',
+            duration: 30,
+            notes: '',
+            areasToImprove: '',
+            params: { activity: 'Práctica rápida' },
+            timestamp: new Date().toISOString()
+        });
+        this.renderLogList();
+        this.updateStats();
+        // Opcional: mostrar feedback visual
+        if (window && window.showFeedback) {
+            window.showFeedback('Sesión registrada con éxito', 'success');
+        }
     }
 
     showAddEntryModal() {

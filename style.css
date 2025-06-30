@@ -614,20 +614,27 @@ footer{background:var(--bg-secondary);border-top:1px solid var(--border-color);p
 }
 
 .feedback {
-    padding: 0.75rem;
-    border-radius: 8px;
-    margin: 1rem 0;
-    font-weight: 500;
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    padding: 10px 24px;
+    border-radius: 6px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #fff;
+    background: var(--success-color, #28a745);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+    opacity: 0.98;
+    pointer-events: none;
+    transition: background 0.2s;
 }
-
-.feedback.success {
-    background: var(--success-color);
-    color: white;
-}
-
 .feedback.error {
-    background: var(--danger-color);
-    color: white;
+    background: var(--danger-color, #e74c3c);
+}
+.feedback.success {
+    background: var(--success-color, #28a745);
 }
 
 /* Circle of Fifths */
@@ -1405,4 +1412,30 @@ footer{background:var(--bg-secondary);border-top:1px solid var(--border-color);p
     .needle {
         transition: none !important;
     }
+}
+
+.ear-trainer-chords-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+    justify-content: center;
+    margin-top: 1rem;
+}
+
+.ear-chord-item, .chord-option.button {
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 15px;
+    background-color: var(--card-bg);
+    text-align: center;
+    box-shadow: var(--shadow);
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    color: var(--text-primary);
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+.ear-chord-item:hover, .chord-option.button:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-hover);
 }
