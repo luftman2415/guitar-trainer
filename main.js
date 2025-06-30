@@ -247,27 +247,27 @@ class Metronome {
 
         // Validaciones estrictas
         if (isNaN(startBpm) || isNaN(endBpm) || isNaN(increment) || isNaN(stepDuration)) {
-            alert('Por favor, ingresa valores numéricos válidos en todos los campos.');
+            showNotification('Por favor, ingresa valores numéricos válidos en todos los campos.', 'error');
             return;
         }
 
         if (startBpm < 40 || startBpm > 240) {
-            alert('El BPM debe estar entre 40 y 240.');
+            showNotification('El BPM debe estar entre 40 y 240.', 'error');
             return;
         }
 
         if (startBpm >= endBpm) {
-            alert('El BPM inicial debe ser menor que el BPM final.');
+            showNotification('El BPM inicial debe ser menor que el BPM final.', 'error');
             return;
         }
 
         if (increment < 1 || increment > 50) {
-            alert('El incremento debe estar entre 1 y 50 BPM.');
+            showNotification('El incremento debe estar entre 1 y 50 BPM.', 'error');
             return;
         }
 
         if (stepDuration < 10 || stepDuration > 600) {
-            alert('La duración del paso debe estar entre 10 y 600 segundos.');
+            showNotification('La duración del paso debe estar entre 10 y 600 segundos.', 'error');
             return;
         }
 
@@ -325,7 +325,7 @@ class Metronome {
         if (newBpm > this.speedTrainer.endBpm) {
             // Speed Trainer completado
             this.stopSpeedTrainer();
-            alert('¡Entrenamiento de velocidad completado! 🎉');
+            showNotification('¡Entrenamiento de velocidad completado! 🎉', 'success');
             return;
         }
 
@@ -2000,9 +2000,9 @@ class EarTrainer {
         ];
         
         optionsEl.innerHTML = `
-            <div class="chord-options">
+            <div class="chord-options ear-trainer-chords-container">
                 ${chords.map(chord => `
-                    <button class="button chord-option" data-chord="${chord}">${chord}</button>
+                    <button class="button chord-option ear-chord-item" data-chord="${chord}">${chord}</button>
                 `).join('')}
             </div>
         `;
