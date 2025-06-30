@@ -247,27 +247,27 @@ class Metronome {
 
         // Validaciones estrictas
         if (isNaN(startBpm) || isNaN(endBpm) || isNaN(increment) || isNaN(stepDuration)) {
-            showNotification('Por favor, ingresa valores numéricos válidos en todos los campos.', 'error');
+            window.showNotification('Por favor, ingresa valores numéricos válidos en todos los campos.', 'error');
             return;
         }
 
         if (startBpm < 40 || startBpm > 240) {
-            showNotification('El BPM debe estar entre 40 y 240.', 'error');
+            window.showNotification('El BPM debe estar entre 40 y 240.', 'error');
             return;
         }
 
         if (startBpm >= endBpm) {
-            showNotification('El BPM inicial debe ser menor que el BPM final.', 'error');
+            window.showNotification('El BPM inicial debe ser menor que el BPM final.', 'error');
             return;
         }
 
         if (increment < 1 || increment > 50) {
-            showNotification('El incremento debe estar entre 1 y 50 BPM.', 'error');
+            window.showNotification('El incremento debe estar entre 1 y 50 BPM.', 'error');
             return;
         }
 
         if (stepDuration < 10 || stepDuration > 600) {
-            showNotification('La duración del paso debe estar entre 10 y 600 segundos.', 'error');
+            window.showNotification('La duración del paso debe estar entre 10 y 600 segundos.', 'error');
             return;
         }
 
@@ -325,7 +325,7 @@ class Metronome {
         if (newBpm > this.speedTrainer.endBpm) {
             // Speed Trainer completado
             this.stopSpeedTrainer();
-            showNotification('¡Entrenamiento de velocidad completado! 🎉', 'success');
+            window.showNotification('¡Entrenamiento de velocidad completado! 🎉', 'success');
             return;
         }
 
@@ -2184,8 +2184,8 @@ class PracticeLog {
         this.renderLogList();
         this.updateStats();
         // Opcional: mostrar feedback visual
-        if (window && window.showFeedback) {
-            window.showFeedback('Sesión registrada con éxito', 'success');
+        if (window && window.showNotification) {
+            window.showNotification('Sesión registrada con éxito', 'success');
         }
     }
 

@@ -613,28 +613,29 @@ footer{background:var(--bg-secondary);border-top:1px solid var(--border-color);p
     border-color: var(--primary-color);
 }
 
-.feedback {
-    position: fixed;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 1000;
-    padding: 10px 24px;
-    border-radius: 6px;
-    font-size: 1.2rem;
-    font-weight: bold;
-    color: #fff;
-    background: var(--success-color, #28a745);
-    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
-    opacity: 0.98;
-    pointer-events: none;
-    transition: background 0.2s;
+.feedback, .notification-feedback {
+    position: fixed !important;
+    top: 24px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    z-index: 2000 !important;
+    padding: 12px 28px !important;
+    border-radius: 7px !important;
+    font-size: 1.25rem !important;
+    font-weight: bold !important;
+    color: #fff !important;
+    background: var(--success-color, #22c55e) !important;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.18) !important;
+    opacity: 0.98 !important;
+    pointer-events: none !important;
+    transition: background 0.2s !important;
+    text-align: center !important;
 }
-.feedback.error {
-    background: var(--danger-color, #e74c3c);
+.feedback.error, .notification-feedback.error {
+    background: var(--danger-color, #e74c3c) !important;
 }
-.feedback.success {
-    background: var(--success-color, #28a745);
+.feedback.success, .notification-feedback.success {
+    background: var(--success-color, #22c55e) !important;
 }
 
 /* Circle of Fifths */
@@ -1414,28 +1415,37 @@ footer{background:var(--bg-secondary);border-top:1px solid var(--border-color);p
     }
 }
 
-.ear-trainer-chords-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 15px;
-    justify-content: center;
-    margin-top: 1rem;
+.ear-trainer-chords-container, .chord-options.ear-trainer-chords-container {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)) !important;
+    gap: 20px !important;
+    justify-items: center !important;
+    align-items: start !important;
+    margin-top: 1.5rem !important;
 }
 
-.ear-chord-item, .chord-option.button {
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    padding: 15px;
-    background-color: var(--card-bg);
-    text-align: center;
-    box-shadow: var(--shadow);
-    cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    color: var(--text-primary);
-    font-weight: 600;
-    font-size: 1.1rem;
+.ear-chord-item, .chord-option.ear-chord-item, .chord-option.button {
+    border: 1.5px solid var(--border-color) !important;
+    border-radius: 10px !important;
+    padding: 18px 10px !important;
+    background-color: var(--bg-card) !important;
+    box-shadow: var(--shadow) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+    min-width: 180px !important;
+    text-align: center !important;
+    color: var(--text-primary) !important;
+    font-weight: 700 !important;
+    font-size: 1.15rem !important;
+    margin: 0 !important;
+    cursor: pointer !important;
+    transition: transform 0.2s, box-shadow 0.2s !important;
 }
-.ear-chord-item:hover, .chord-option.button:hover {
-    transform: translateY(-3px);
-    box-shadow: var(--shadow-hover);
+.ear-chord-item:hover, .chord-option.ear-chord-item:hover, .chord-option.button:hover {
+    transform: translateY(-3px) scale(1.04) !important;
+    box-shadow: var(--shadow-hover) !important;
+    background: var(--accent-primary) !important;
+    color: #fff !important;
 }
